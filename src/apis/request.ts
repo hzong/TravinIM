@@ -1,6 +1,18 @@
 import { ApiClient, ApiError } from '@/apis/client'
 import { deleteToken, getToken } from '@/utils/auth.ts'
+import { deepCamelToSnake, deepSnakeToCamel } from '@/utils/im-case.ts'
 import { useThrottleFn } from '@vueuse/core'
+
+/** LumenIM /api/v1 → Travin /app-api/im */
+export function rewriteImApiPath(path: string): string {
+  if (!path.startsWith('/api/v1/')) {
+    return path
+  }
+  if (path === '/api/v1/common/send-email') {
+    return '/app-api/im/auth/send-email-code'
+  }
+  return path.replace(/^\/api\/v1\//, '/app-api/im/')
+}
 
 export const client = new ApiClient(import.meta.env.VITE_BASE_API, {
   headers: {
@@ -9,13 +21,23 @@ export const client = new ApiClient(import.meta.env.VITE_BASE_API, {
   timeout: 5000 // 默认请求超时时间 5 秒
 })
 
-client.interceptor.request.use((_: string, req: RequestInit) => {
+client.interceptor.request.use((url: string, req: RequestInit) => {
   const token = getToken()
 
   if (token) {
     req.headers = {
       ...req.headers,
       Authorization: `Bearer ${token}`
+    }
+  }
+
+  // IM App API 使用 camelCase RequestBody
+  if (url.includes('/app-api/im/') && typeof req.body === 'string') {
+    try {
+      const parsed = JSON.parse(req.body)
+      req.body = JSON.stringify(deepSnakeToCamel(parsed))
+    } catch {
+      /* 非 JSON 体忽略 */
     }
   }
 
@@ -41,11 +63,28 @@ const showAuthDialog = useThrottleFn(() => {
 client.interceptor.response.use((res: Response, body: any) => {
   if (res.status == 401) showAuthDialog()
 
+  // Travin CommonResult：code === 0 时解包 data
+  if (body && typeof body.code === 'number') {
+    if (body.code !== 0) {
+      throw new ApiError(body.code, body.msg || body.message || '业务错误')
+    }
+    // 登录等接口保留 camelCase；其余 IM 数据转 snake_case 兼容旧 UI
+    const data = body.data
+    if (res.url.includes('/app-api/im/auth/')) {
+      return data
+    }
+    return deepCamelToSnake(data)
+  }
+
   return body
 })
 
-// 高阶函数：创建 API 调用函数
-export const createApi = client.request.bind(client)
+const rawRequest = client.request.bind(client)
+
+/** 高阶函数：创建 API 调用函数（自动改写 IM 路径） */
+export function createApi<R = any, T = any>(url: string, method?: string) {
+  return rawRequest<R, T>(rewriteImApiPath(url), method)
+}
 
 export interface FetchApiOption {
   loading?: Ref<boolean>

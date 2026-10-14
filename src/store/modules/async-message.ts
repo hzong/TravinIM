@@ -10,6 +10,7 @@ import { useUserStore } from './user'
 
 type IAsyncMessage = {
   msg_id?: string // 消息ID
+  req_id?: string // HTTP 幂等请求号，重试勿变
   type: string // 消息类型
   talk_mode: number // 聊天类型
   to_from_id: number // 聊天对象ID[群ID或者好友ID]
@@ -37,6 +38,7 @@ export const useAsyncMessageStore = defineStore('async-message', () => {
   // 添加待推送消息
   function addAsyncMessage(data: IAsyncMessage) {
     data.msg_id = uuid()
+    data.req_id = data.req_id || uuid()
     items.push(data)
 
     msgIdsSet.add(data.msg_id)

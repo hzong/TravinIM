@@ -7,6 +7,8 @@ import { datetime } from '@/utils/datetime'
 import { isElectronMode } from '@/utils/electron'
 import { formatTalkItem, playMusic } from '@/utils/talk'
 import { nextTick } from 'vue'
+import ws from '@/connect'
+import { myUserNo } from '@/utils/im-user-resolve'
 import Base from './base'
 
 /**
@@ -45,18 +47,25 @@ class Talk extends Base {
 
     Object.assign(this, { from_id, to_from_id, talk_mode, body })
 
-    try {
-      this.body.extra = JSON.parse(this.body.extra)
-    } catch (e) {
-      this.body.extra = {}
-      console.error('JSON.parse error', e)
+    // Travin v1.4：extra/quote 已是对象；旧版字符串仍兼容
+    if (typeof this.body.extra === 'string') {
+      try {
+        this.body.extra = JSON.parse(this.body.extra)
+      } catch {
+        this.body.extra = {}
+      }
+    } else {
+      this.body.extra = this.body.extra ?? {}
     }
 
-    try {
-      this.body.quote = JSON.parse(this.body.quote)
-    } catch (e) {
+    if (this.body.quote == null) {
       this.body.quote = {}
-      console.error('JSON.parse error', e)
+    } else if (typeof this.body.quote === 'string') {
+      try {
+        this.body.quote = JSON.parse(this.body.quote)
+      } catch {
+        this.body.quote = {}
+      }
     }
 
     this.handle()
@@ -67,6 +76,10 @@ class Talk extends Base {
    * @returns
    */
   isCurrSender(): boolean {
+    const myNo = myUserNo()
+    if (myNo && (this as any).from_user_no) {
+      return (this as any).from_user_no === myNo
+    }
     return this.from_id == this.getAccountId()
   }
 
@@ -127,6 +140,11 @@ class Talk extends Base {
       this.updateTalkItem()
       this.play()
       this.showMessageNocice()
+    }
+
+    // 非本人发送的消息：回 MQTT ack received（多端同步「已达」）
+    if (!this.isCurrSender() && this.body?.msg_id) {
+      ws.emitMessageReceivedAck(this.body.msg_id)
     }
   }
 

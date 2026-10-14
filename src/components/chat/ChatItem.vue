@@ -105,7 +105,7 @@ const onClieckSelect = (e: Event, item: IMessage) => {
             <span class="sent-status fail" v-if="item?.status === StatusEnum.ERROR">发送失败</span>
           </div>
 
-          <div v-if="item.quote?.quote_id" class="chat-content-quote">
+          <div v-if="item.quote?.quote_id || (item.quote as any)?.quoteId" class="chat-content-quote">
             <n-icon :component="ToTop" size="22" />
             <!-- TODO 点击跳转到指定的消息 -->
             <span>回复：{{ item?.quote?.content }}</span>

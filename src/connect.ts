@@ -1,28 +1,26 @@
 import { NAvatar } from 'naive-ui'
 import { useTalkStore, useUserStore } from '@/store'
 import { notifyIcon } from '@/constant/default'
-import WsSocket from '@/plugins/websocket.ts'
+import MqttSocket from '@/plugins/mqtt-socket.ts'
 import EventTalk from '@/event/talk.ts'
 import EventKeyboard from '@/event/keyboard.ts'
 import EventRevoke from '@/event/revoke.ts'
-import { getToken, isLogin } from '@/utils/auth.ts'
-
-const urlCallback = () => {
-  if (!isLogin()) {
-    window.location.reload()
-  }
-
-  return `${import.meta.env.VITE_SOCKET_API}/wss/default.io?token=${getToken()}`
-}
+import { isLogin } from '@/utils/auth.ts'
+import {
+  envelopeToContactApplyEvent,
+  envelopeToEventError,
+  envelopeToKeyboardEvent,
+  envelopeToRevokeEvent,
+  envelopeToTalkEvent
+} from '@/utils/im-realtime.ts'
+import { rememberUserNo, resolveUserIdByUserNo } from '@/utils/im-user-resolve.ts'
 
 class Connect {
-  private conn: WsSocket
+  private conn: MqttSocket
 
   constructor() {
-    this.conn = new WsSocket(urlCallback, {
-      onError: () => {
-        // console.error('WebSocket 连接失败:', evt)
-      },
+    this.conn = new MqttSocket({
+      onError: () => {},
       onOpen: () => {
         useUserStore().updateSocketStatus(true)
         useTalkStore().loadTalkList()
@@ -36,6 +34,10 @@ class Connect {
   }
 
   connect(): void {
+    if (!isLogin()) {
+      window.location.reload()
+      return
+    }
     this.conn.connection()
   }
 
@@ -44,47 +46,69 @@ class Connect {
   }
 
   isConnect() {
-    return this.conn.connect?.readyState === WebSocket.OPEN
+    return this.conn.connect?.readyState === 1
   }
 
   emit(event: string, data: any) {
     this.conn.emit(event, data)
   }
 
+  /** 消息已达回执（IM_MQTT §5.4） */
+  emitMessageReceivedAck(chatMsgId: string) {
+    if (!chatMsgId) return
+    this.conn.emit('ack', { ackId: chatMsgId, status: 'received' })
+  }
+
   bindEvents() {
-    this.onPing()
-    this.onPong()
     this.onImMessage()
     this.onImMessageKeyboard()
     this.onImMessageRevoke()
     this.onImContactApply()
     this.onImGroupApply()
+    this.onImUserProfileUpdate()
     this.onEventError()
   }
 
-  onPing() {
-    this.conn.on('ping', () => this.emit('pong', null))
-  }
-
-  onPong() {
-    this.conn.on('pong', () => {})
-    this.conn.on('connect', () => {})
+  onImUserProfileUpdate() {
+    this.conn.on('im.user.profile.update', (envelope: any) => {
+      const p = envelope?.payload ?? envelope
+      const userNo = p.userId || p.userNo
+      if (!userNo) return
+      const uid = resolveUserIdByUserNo(userNo)
+      if (uid) {
+        rememberUserNo(userNo, uid)
+      }
+      const talkStore = useTalkStore()
+      talkStore.items.forEach((item) => {
+        if (item.talk_mode !== 1 || !uid || item.to_from_id !== uid) return
+        talkStore.updateItem({
+          index_name: item.index_name,
+          name: p.nickname || item.name,
+          avatar: p.avatar || item.avatar
+        })
+      })
+    })
   }
 
   onImMessage() {
-    this.conn.on('im.message', (data: any) => new EventTalk(data))
+    this.conn.on('im.message', (envelope: any) => new EventTalk(envelopeToTalkEvent(envelope)))
   }
 
   onImMessageKeyboard() {
-    this.conn.on('im.message.keyboard', (data: any) => new EventKeyboard(data))
+    this.conn.on('im.message.keyboard', (envelope: any) =>
+      new EventKeyboard(envelopeToKeyboardEvent(envelope))
+    )
   }
 
   onImMessageRevoke() {
-    this.conn.on('im.message.revoke', (data: any) => new EventRevoke(data))
+    this.conn.on('im.message.revoke', (envelope: any) =>
+      new EventRevoke(envelopeToRevokeEvent(envelope))
+    )
   }
 
   onImContactApply() {
-    this.conn.on('im.contact.apply', (data: any) => {
+    this.conn.on('im.contact.apply', (envelope: any) => {
+      const data = envelopeToContactApplyEvent(envelope)
       window['$notification']?.create({
         title: '好友申请通知',
         content: data.remark,
@@ -124,12 +148,12 @@ class Connect {
   }
 
   onEventError() {
-    this.conn.on('event_error', (data: any) => {
-      console.error('WebSocket事件错误:', data)
+    this.conn.on('event_error', (envelope: any) => {
+      const data = envelopeToEventError(envelope)
+      console.error('MQTT event_error:', data)
       window['$message']?.error(`错误代码: ${data.error_code} - ${data.error_message}`)
     })
   }
 }
 
-// 导出单例
 export default new Connect()

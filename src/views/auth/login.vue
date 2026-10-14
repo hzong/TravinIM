@@ -4,8 +4,7 @@ import { sync } from '@/apis/request'
 import ws from '@/connect'
 import { useInject } from '@/hooks'
 import { useUserStore } from '@/store'
-import { setToken } from '@/utils/auth.ts'
-import { rsaEncrypt } from '@/utils/rsa'
+import { applyImAuthSession, buildImAuthRequest } from '@/utils/im-auth.ts'
 import { playMusic } from '@/utils/talk'
 import { Github } from '@icon-park/vue-next'
 
@@ -18,7 +17,7 @@ const rules = {
   username: {
     required: true,
     trigger: ['blur', 'input'],
-    message: '账号不能为空'
+    message: '邮箱不能为空'
   },
   password: {
     required: true,
@@ -38,12 +37,11 @@ const onLogin = async () => {
   sync(
     async () => {
       const data = await fetchAuthLogin({
-        mobile: model.username,
-        password: rsaEncrypt(model.password),
-        platform: 'web'
-      })
+        email: model.username,
+        ...buildImAuthRequest(model.password)
+      } as any)
 
-      setToken(data.access_token, data.expires_in)
+      applyImAuthSession(data as any)
       ws.connect()
       message.success('登录成功，即将进入系统')
       userStore.loadSetting()
@@ -65,10 +63,10 @@ const onValidate = (e: Event) => {
 
 const onClickAccount = (type: number) => {
   if (type == 1) {
-    model.username = '13800000001'
+    model.username = 'demo1@example.com'
     model.password = 'admin123'
   } else {
-    model.username = '13800000002'
+    model.username = 'demo2@example.com'
     model.password = 'admin123'
   }
 
@@ -92,7 +90,7 @@ const toOauth = async (oauth_type: 'github' | 'gitee') => {
       <n-form ref="formRef" size="large" :model="model" :rules="rules">
         <n-form-item path="username" :show-label="false">
           <n-input
-            placeholder="请输入手机号"
+            placeholder="请输入邮箱"
             v-model:value="model.username"
             :maxlength="11"
             @keydown.enter="onValidate"

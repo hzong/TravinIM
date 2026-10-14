@@ -2,6 +2,7 @@ import { fetchContactApplyUnreadNum, fetchGroupApplyUnreadNum, fetchUserSetting 
 import { fetchApi } from '@/apis/request'
 import { storage } from '@/utils'
 import * as auth from '@/utils/auth.ts'
+import { rememberUserNo } from '@/utils/im-user-resolve'
 import { defineStore } from 'pinia'
 
 interface IUserStoreState {
@@ -59,7 +60,11 @@ export const useUserStore = defineStore('user', {
       if (err) return
 
       this.nickname = data.user_info.nickname
-      this.uid = data.user_info.uid
+      this.uid = data.user_info.id ?? data.user_info.uid
+      const userNo = data.user_info.user_no ?? data.user_info.userNo
+      if (userNo && this.uid) {
+        rememberUserNo(userNo, this.uid)
+      }
       this.avatar = data.user_info.avatar
       this.gender = data.user_info.gender
       this.mobile = data.user_info.mobile || ''

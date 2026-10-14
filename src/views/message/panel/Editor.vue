@@ -15,6 +15,7 @@ import {
   useUploadsStore
 } from '@/store'
 import { bus } from '@/utils'
+import { resolveUserNoByUserId } from '@/utils/im-user-resolve'
 import { throttle } from '@/utils/common'
 import { getVideoImage } from '@/utils/file'
 
@@ -169,8 +170,11 @@ const onSendMixedEvent = (data: any): Promise<boolean> => {
 }
 
 const onKeyboardPush = throttle(() => {
+  const peerUserNo = resolveUserNoByUserId(props.toFromId)
   ws.emit('im.message.keyboard', {
-    to_from_id: props.toFromId
+    talk_mode: props.talkMode,
+    to_from_id: peerUserNo || props.toFromId,
+    action: 'typing'
   })
 }, 3000)
 

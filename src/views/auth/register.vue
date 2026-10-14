@@ -1,47 +1,31 @@
 <script lang="ts" setup>
-import { fetchAuthRegister, fetchCommonSendSms } from '@/apis/api'
+import { fetchAuthRegister } from '@/apis/api'
+import { fetchImSendEmailCode } from '@/apis/customize'
 import { sync } from '@/apis/request'
 import ws from '@/connect'
 import { useInject, useSmsLock } from '@/hooks'
 import { useUserStore } from '@/store'
-import { setToken } from '@/utils/auth'
-import { rsaEncrypt } from '@/utils/rsa'
-import { isMobile } from '@/utils/validate'
+import { applyImAuthSession, buildImAuthRequest } from '@/utils/im-auth'
 
 const { message } = useInject()
 const userStore = useUserStore()
 
-// 初始化短信按钮锁
-const { startCountdown, Countdown } = useSmsLock('REGISTER_SMS', 60)
+const { startCountdown, Countdown } = useSmsLock('REGISTER_EMAIL', 60)
 
 const router = useRouter()
 const formRef = ref()
 const rules = {
-  nickname: {
-    required: true,
-    trigger: ['blur', 'input'],
-    message: '昵称不能为空！'
-  },
   username: {
     required: true,
-    // @ts-expect-error
-    validator(rule: any, value: string) {
-      if (!value) {
-        return new Error('手机号不能为空！')
-      } else if (!isMobile(value)) {
-        return new Error('请正确填写手机号！')
-      }
-
-      return true
-    },
-    trigger: ['blur', 'input']
+    trigger: ['blur', 'input'],
+    message: '邮箱不能为空！'
   },
   password: {
     required: true,
     trigger: ['blur', 'input'],
     message: '密码不能为空！'
   },
-  sms_code: {
+  email_code: {
     required: true,
     trigger: ['blur', 'input'],
     message: '验证码不能为空！'
@@ -50,24 +34,21 @@ const rules = {
 
 const loading = ref(false)
 const model = reactive({
-  nickname: '',
   username: '',
   password: '',
-  sms_code: ''
+  email_code: ''
 })
 
 const onRegister = async () => {
   const options = { loading }
   sync(async () => {
     const data = await fetchAuthRegister({
-      nickname: model.nickname,
-      mobile: model.username,
-      password: rsaEncrypt(model.password),
-      sms_code: model.sms_code,
-      platform: 'web'
-    })
+      email: model.username,
+      emailCode: model.email_code,
+      ...buildImAuthRequest(model.password)
+    } as any)
 
-    setToken(data.access_token, data.expires_in)
+    applyImAuthSession(data as any)
     ws.connect()
     message.success('注册成功，即将进入系统')
     userStore.loadSetting()
@@ -83,27 +64,18 @@ const onValidate = (e) => {
   })
 }
 
-// 发送短信
-const onSendSms = async () => {
-  if (!isMobile(model.username)) {
-    return window['$message'].warning('请正确填写手机号')
+const onSendEmail = async () => {
+  if (!model.username) {
+    return window['$message'].warning('请先填写邮箱')
   }
 
-  const options = { loading, successText: '短信发送成功' }
-
-  sync(async () => {
-    const data = await fetchCommonSendSms({
-      mobile: model.username,
-      channel: 'register'
-    })
-
-    startCountdown()
-
-    if (data?.sms_code) {
-      model.sms_code = data.sms_code
-      window['$message'].success('已开启验证码自动填充')
-    }
-  }, options)
+  sync(
+    async () => {
+      await fetchImSendEmailCode({ email: model.username, scene: 'register' })
+      startCountdown()
+    },
+    { loading, successText: '验证码已发送' }
+  )
 }
 </script>
 
@@ -115,29 +87,20 @@ const onSendSms = async () => {
       <n-form ref="formRef" size="large" :model="model" :rules="rules">
         <n-form-item path="username" :show-label="false">
           <n-input
-            placeholder="请输入手机号"
+            placeholder="请输入邮箱"
             v-model:value="model.username"
-            :maxlength="11"
             @keydown.enter="onValidate"
           />
         </n-form-item>
 
-        <n-form-item path="sms_code" :show-label="false">
+        <n-form-item path="email_code" :show-label="false">
           <n-input
-            placeholder="验证码"
-            v-model:value="model.sms_code"
+            placeholder="邮箱验证码"
+            v-model:value="model.email_code"
             :maxlength="6"
             @keydown.enter="onValidate"
           />
-          <Countdown class="mt-l5" @click="onSendSms" />
-        </n-form-item>
-
-        <n-form-item path="nickname" :show-label="false">
-          <n-input
-            placeholder="设置昵称"
-            v-model:value="model.nickname"
-            @keydown.enter="onValidate"
-          />
+          <Countdown class="mt-l5" @click="onSendEmail" />
         </n-form-item>
 
         <n-form-item path="password" :show-label="false">
