@@ -1,17 +1,16 @@
 <script lang="ts" setup>
-import { fetchAuthForget, fetchCommonSendSms } from '@/apis/api'
+import { fetchAuthForget } from '@/apis/api'
+import { fetchImSendEmailCode } from '@/apis/customize'
 import { fetchApi } from '@/apis/request'
 import { useSmsLock } from '@/hooks'
-import { rsaEncrypt } from '@/utils/rsa'
-import { isMobile } from '@/utils/validate'
 
 // 初始化短信按钮锁
-const { startCountdown, Countdown } = useSmsLock('FORGET_PSW_SMS', 120)
+const { startCountdown, Countdown } = useSmsLock('FORGET_EMAIL', 60)
 
 const router = useRouter()
 const formRef = ref()
 const rules = {
-  sms_code: {
+  email_code: {
     required: true,
     trigger: ['blur', 'input'],
     message: '验证码不能为空！'
@@ -19,16 +18,7 @@ const rules = {
   username: {
     required: true,
     trigger: ['blur', 'input'],
-    // @ts-expect-error
-    validator(rule: any, value: string) {
-      if (!value) {
-        return new Error('手机号不能为空！')
-      } else if (!isMobile(value)) {
-        return new Error('请正确填写手机号！')
-      }
-
-      return true
-    }
+    message: '邮箱不能为空！'
   },
   password: {
     required: true,
@@ -41,16 +31,16 @@ const loading = ref(false)
 const model = reactive({
   username: '',
   password: '',
-  sms_code: ''
+  email_code: ''
 })
 
 const onForget = async () => {
   const [err] = await fetchApi(
     fetchAuthForget,
     {
-      mobile: model.username,
-      password: rsaEncrypt(model.password),
-      sms_code: model.sms_code
+      email: model.username,
+      password: model.password,
+      email_code: model.email_code
     },
     { loading, successText: '密码修改成功' }
   )
@@ -72,17 +62,17 @@ const onValidate = (e: Event) => {
 
 // 发送短信
 const onSendSms = async () => {
-  if (!isMobile(model.username)) {
-    return window['$message'].warning('请正确填写手机号')
+  if (!model.username.includes('@')) {
+    return window['$message'].warning('请正确填写邮箱')
   }
 
   const [err] = await fetchApi(
-    fetchCommonSendSms,
+    fetchImSendEmailCode,
     {
-      mobile: model.username,
-      channel: 'forget_account'
+      email: model.username,
+      scene: 'forget'
     },
-    { loading, successText: '短信发送成功' }
+    { loading, successText: '验证码已发送' }
   )
 
   if (err) return
@@ -98,18 +88,18 @@ const onSendSms = async () => {
       <n-form ref="formRef" size="large" :model="model" :rules="rules">
         <n-form-item path="username" :show-label="false">
           <n-input
-            placeholder="手机号"
+            placeholder="邮箱"
             v-model:value="model.username"
-            :maxlength="11"
+            :maxlength="128"
             @keydown.enter="onValidate"
           />
         </n-form-item>
 
-        <n-form-item path="sms_code" :show-label="false">
+        <n-form-item path="email_code" :show-label="false">
           <n-input
-            placeholder="验证码"
+            placeholder="邮箱验证码"
             :maxlength="6"
-            v-model:value="model.sms_code"
+            v-model:value="model.email_code"
             @keydown.enter="onValidate"
           />
 
