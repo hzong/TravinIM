@@ -33,6 +33,7 @@ export interface ServTalkMessageSendRequest {
   body: any
   talk_mode: number
   to_from_id: number
+  session_no?: string
   msg_id?: string
   /** 重试时必须保持不变 */
   req_id?: string
@@ -43,7 +44,8 @@ interface TravinMessageSendRequest {
   msgId: string
   type: string
   talkMode: number
-  toFromId: number
+  toId: number
+  sessionNo: string
   body: any
   quoteId: string
 }
@@ -63,7 +65,8 @@ export async function fetchMessageSend(req: ServTalkMessageSendRequest) {
     msgId,
     type: req.type,
     talkMode: req.talk_mode,
-    toFromId: req.to_from_id,
+    toId: req.to_from_id,
+    sessionNo: req.session_no || '',
     body: req.body,
     quoteId: req.quote_id || ''
   })

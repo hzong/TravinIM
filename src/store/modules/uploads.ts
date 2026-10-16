@@ -102,6 +102,7 @@ export const useUploadsStore = defineStore('uploads', {
         type: 'file',
         talk_mode: item.talk_type,
         to_from_id: item.receiver_id,
+        session_no: item.session_no,
         body: { upload_id: item.upload_id }
       })
     }

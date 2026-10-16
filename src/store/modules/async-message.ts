@@ -14,6 +14,7 @@ type IAsyncMessage = {
   type: string // 消息类型
   talk_mode: number // 聊天类型
   to_from_id: number // 聊天对象ID[群ID或者好友ID]
+  session_no?: string
   quote_id: string // 引用消息ID
   body: any // 消息体
 }

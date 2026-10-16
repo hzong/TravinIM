@@ -159,7 +159,7 @@ function normalizeOutboxPayload(event: string, payload: any) {
   if (event === 'im.message.keyboard') {
     return {
       talkMode: payload.talk_mode ?? payload.talkMode ?? 1,
-      toFromId: payload.to_from_id ?? payload.toFromId,
+      toId: payload.to_from_id ?? payload.toId ?? payload.toFromId,
       action: payload.action || 'typing'
     }
   }

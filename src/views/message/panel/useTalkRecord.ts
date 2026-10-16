@@ -14,11 +14,14 @@ export function useTalkRecord() {
   const loadChatRecord = async (): Promise<boolean> => {
     const { target: talk } = dialogueStore
 
-    const request = {
+    const request: Record<string, unknown> = {
       talk_mode: talk.talk_mode,
       to_from_id: talk.to_from_id,
-      cursor: cursor,
+      session_no: talk.session_no,
       limit: 30
+    }
+    if (cursor > 0) {
+      request.cursor = cursor
     }
 
     try {
@@ -30,7 +33,7 @@ export function useTalkRecord() {
         throw new Error('Talk mode or to_from_id changed')
       }
 
-      if (request.cursor === 0) {
+      if (!request.cursor) {
         dialogueStore.clearDialogueRecord()
       }
 

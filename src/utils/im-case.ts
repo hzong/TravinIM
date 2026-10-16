@@ -1,5 +1,8 @@
 /** snake_case → camelCase（仅一层 key，嵌套对象递归） */
 export function snakeToCamelKey(key: string): string {
+  if (key === 'to_from_id') {
+    return 'toId'
+  }
   return key.replace(/_([a-z])/g, (_, c) => c.toUpperCase())
 }
 
@@ -18,6 +21,9 @@ export function deepSnakeToCamel(obj: unknown): unknown {
 }
 
 function camelToSnakeKey(key: string): string {
+  if (key === 'toId') {
+    return 'to_from_id'
+  }
   return key.replace(/[A-Z]/g, (l) => `_${l.toLowerCase()}`)
 }
 

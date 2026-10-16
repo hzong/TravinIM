@@ -14,6 +14,7 @@ export interface ISession {
   index_name: string // 索引名称
   talk_mode: number // 聊天类型
   to_from_id: number // 接收者id
+  session_no?: string // 服务端会话号
   name: string // 昵称
   avatar: string // 头像
   remark: string // 备注

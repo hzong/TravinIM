@@ -100,7 +100,8 @@ export function useSessionMenu() {
   const onRemoveTalk = async (item: ISession) => {
     const [err] = await fetchApi(fetchTalkSessionDelete, {
       talk_mode: item.talk_mode,
-      to_from_id: item.to_from_id
+      to_from_id: item.to_from_id,
+      session_no: item.session_no
     })
 
     if (!err) {
@@ -113,6 +114,7 @@ export function useSessionMenu() {
     const [err] = await fetchApi(fetchTalkSessionDisturb, {
       talk_mode: item.talk_mode,
       to_from_id: item.to_from_id,
+      session_no: item.session_no,
       action: item.is_disturb === 2 ? 1 : 2
     })
 
@@ -133,6 +135,7 @@ export function useSessionMenu() {
     const [err] = await fetchApi(fetchTalkSessionTop, {
       talk_mode: item.talk_mode,
       to_from_id: item.to_from_id,
+      session_no: item.session_no,
       action: item.is_top === 2 ? 1 : 2
     })
 

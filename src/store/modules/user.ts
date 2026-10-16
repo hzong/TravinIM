@@ -1,5 +1,6 @@
 import { fetchContactApplyUnreadNum, fetchGroupApplyUnreadNum, fetchUserSetting } from '@/apis/api'
-import { fetchApi } from '@/apis/request'
+import { createApi, fetchApi } from '@/apis/request'
+import { clearImSession } from '@/utils/im-auth'
 import { storage } from '@/utils'
 import * as auth from '@/utils/auth.ts'
 import { rememberUserNo } from '@/utils/im-user-resolve'
@@ -43,9 +44,16 @@ export const useUserStore = defineStore('user', {
       this.online = status
     },
 
-    logoutLogin() {
+    async logoutLogin() {
+      const logout = createApi('/app-api/im/auth/logout')
+      try {
+        await logout({})
+      } catch {
+        /* 本地仍清掉登录态 */
+      }
       this.$reset()
       storage.remove('user_info')
+      clearImSession()
       auth.deleteToken()
       location.reload()
     },

@@ -54,7 +54,7 @@ const indexName = computed(() => dialogueStore.index_name)
 const onTabTalk = (item: ISession, follow = false) => {
   if (item.index_name === indexName.value) return
 
-  const data = { talk_mode: item.talk_mode, to_from_id: item.to_from_id }
+  const data = { talk_mode: item.talk_mode, to_from_id: item.to_from_id, session_no: item.session_no }
 
   bus.emit(SessionConst.Switch, data)
 

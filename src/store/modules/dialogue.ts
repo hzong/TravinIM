@@ -35,7 +35,8 @@ export const useDialogueStore = defineStore('dialogue', {
         username: '',
         description: '',
         talk_mode: 0, // 对话来源[1:私聊;2:群聊]
-        to_from_id: 0 // 对话对象ID[群ID或者好友ID]
+        to_from_id: 0, // 对话对象ID[群ID或者好友ID]
+        session_no: ''
       },
 
       // 好友是否正在输入文字
@@ -68,6 +69,7 @@ export const useDialogueStore = defineStore('dialogue', {
         username: data.remark || data.name,
         talk_mode: data.talk_mode,
         to_from_id: data.to_from_id,
+        session_no: data.session_no || '',
         description: ''
       }
 
@@ -168,6 +170,7 @@ export const useDialogueStore = defineStore('dialogue', {
       const [err] = await fetchApi(fetchMessageDelete, {
         talk_mode: this.target.talk_mode,
         to_from_id: this.target.to_from_id,
+        session_no: this.target.session_no,
         msg_ids: msgIds
       })
 
@@ -181,6 +184,7 @@ export const useDialogueStore = defineStore('dialogue', {
       const [err] = await fetchApi(fetchMessageRevoke, {
         talk_mode: this.target.talk_mode,
         to_from_id: this.target.to_from_id,
+        session_no: this.target.session_no,
         msg_id
       })
 

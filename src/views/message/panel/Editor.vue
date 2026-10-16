@@ -51,7 +51,8 @@ const onSendMessage = async (data: any = {}): Promise<boolean> => {
   const params = {
     ...data,
     talk_mode: props.talkMode,
-    to_from_id: props.toFromId
+    to_from_id: props.toFromId,
+    session_no: dialogueStore.target.session_no
   }
 
   // 异步发送

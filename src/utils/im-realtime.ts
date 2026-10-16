@@ -61,7 +61,7 @@ export function envelopeToTalkEvent(envelope: any) {
   const p = envelope?.payload ?? envelope
   const { extra, quote } = parseExtraQuote(p.extra, p.quote)
   const talkMode = num(p.talkMode)
-  const ids = resolveTalkIds(talkMode, p.fromId, p.toFromId)
+  const ids = resolveTalkIds(talkMode, p.fromId, p.toId ?? p.toFromId)
 
   return {
     talk_mode: talkMode,
@@ -96,7 +96,7 @@ export function envelopeToKeyboardEvent(envelope: any) {
 export function envelopeToRevokeEvent(envelope: any) {
   const p = envelope?.payload ?? envelope
   const talkMode = num(p.talkMode)
-  const ids = resolveTalkIds(talkMode, p.fromId, p.toFromId)
+  const ids = resolveTalkIds(talkMode, p.fromId, p.toId ?? p.toFromId)
   return {
     talk_mode: talkMode,
     to_from_id: ids.to_from_id,

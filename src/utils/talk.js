@@ -45,7 +45,8 @@ export function formatTalkItem(params) {
     is_robot: params.is_robot ?? params.isRobot,
     unread_num: params.unread_num ?? params.unreadNum,
     msg_text: params.msg_text ?? params.msgText,
-    updated_at: params.updated_at ?? params.updatedAt
+    updated_at: params.updated_at ?? params.updatedAt,
+    session_no: params.session_no ?? params.sessionNo ?? ''
   }
   options = { ...options, ...merged }
   options.index_name = `${options.talk_mode}_${options.to_from_id}`
