@@ -19,7 +19,7 @@ const onSave = async () => {
   await fetchApi(
     fetchGroupNoticeEdit,
     {
-      group_id: props.groupId,
+      groupId: props.groupId,
       content: editorContent.value
     },
     {
@@ -41,7 +41,7 @@ const onUploadImage = async (files: File[], callback: any) => {
 }
 
 const loadDetail = async () => {
-  const [err, data] = await fetchApi(fetchGroupDetail, { group_id: props.groupId })
+  const [err, data] = await fetchApi(fetchGroupDetail, { groupId: props.groupId })
 
   if (err) return
 

@@ -29,7 +29,7 @@ const onLoadData = async (isClearTip = false) => {
 }
 
 const onInfo = (item: ContactApplyListResponse_Item) => {
-  toShowUserInfo(item.user_id)
+  toShowUserInfo(item.userId)
 }
 
 const onAccept = async (item: ContactApplyListResponse_Item) => {

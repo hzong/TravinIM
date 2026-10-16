@@ -3,7 +3,7 @@ import { fetchApi } from '@/apis/request.ts'
 import { useInject } from './useInject.ts'
 
 type GroupParmas = {
-  group_id: number
+  groupId: number
   name: string
 }
 
@@ -22,7 +22,7 @@ export function useGroup() {
       },
       onPositiveClick: async () => {
         const [err] = await fetchApi(fetchGroupDismiss, {
-          group_id: params.group_id
+          groupId: params.groupId
         })
 
         if (!err) fn()
@@ -45,7 +45,7 @@ export function useGroup() {
       },
       onPositiveClick: async () => {
         const [err] = await fetchApi(fetchGroupSecede, {
-          group_id: params.group_id
+          groupId: params.groupId
         })
 
         if (!err) fn()

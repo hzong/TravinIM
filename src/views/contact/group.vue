@@ -18,7 +18,7 @@ const items = ref<any[]>([])
 
 const params = reactive({
   isShow: false,
-  group_id: 0
+  groupId: 0
 })
 
 const tabIndex = ref('all')
@@ -53,11 +53,11 @@ const onLoadData = async () => {
 
 const onShowGroup = (item: any) => {
   params.isShow = true
-  params.group_id = item.group_id
+  params.groupId = item.groupId
 }
 
 const onToTalk = (item: any) => {
-  talkStore.toTalk(2, item.group_id, router)
+  talkStore.toTalk(2, item.groupId, router)
 }
 
 const onGroupCallBack = () => {
@@ -111,7 +111,7 @@ onMounted(() => {
       <div class="cards">
         <GroupCard
           v-for="item in filter"
-          :key="item.group_id"
+          :key="item.groupId"
           :avatar="item.avatar"
           :username="item.group_name"
           :gender="item.gender"
@@ -142,9 +142,9 @@ onMounted(() => {
     show-mask="transparent"
   >
     <GroupPanel
-      :group-id="params.group_id"
+      :group-id="params.groupId"
       @close="params.isShow = false"
-      @to-talk="talkStore.toTalk(2, params.group_id, router)"
+      @to-talk="talkStore.toTalk(2, params.groupId, router)"
     />
   </n-drawer>
 </template>

@@ -2,18 +2,18 @@ import { getToken } from '@/utils/auth.ts'
 
 /**
  * 文件下载方法
- * @param msg_id
- * @param talk_mode
- * @param to_from_id
+ * @param msgId
+ * @param talkMode
+ * @param toId
  */
-export function download(msg_id: string, talk_mode: number) {
+export function download(msgId: string, talkMode: number) {
   const token = getToken()
 
   try {
     const link = document.createElement('a')
     link.href = `${
       import.meta.env.VITE_BASE_API
-    }/api/v1/talk/file-download?msg_id=${msg_id}&talk_mode=${talk_mode}&token=${token}`
+    }/api/v1/talk/file-download?msgId=${msgId}&talkMode=${talkMode}&token=${token}`
     link.click()
   } catch (e) {
     console.warn(e)

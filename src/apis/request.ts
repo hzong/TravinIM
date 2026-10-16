@@ -1,6 +1,5 @@
 import { ApiClient, ApiError } from '@/apis/client'
 import { deleteToken, getToken } from '@/utils/auth.ts'
-import { deepCamelToSnake, deepSnakeToCamel } from '@/utils/im-case.ts'
 import { useThrottleFn } from '@vueuse/core'
 
 /** LumenIM /api/v1 → Travin /app-api/im */
@@ -21,23 +20,13 @@ export const client = new ApiClient(import.meta.env.VITE_BASE_API, {
   timeout: 5000 // 默认请求超时时间 5 秒
 })
 
-client.interceptor.request.use((url: string, req: RequestInit) => {
+client.interceptor.request.use((_url: string, req: RequestInit) => {
   const token = getToken()
 
   if (token) {
     req.headers = {
       ...req.headers,
       Authorization: `Bearer ${token}`
-    }
-  }
-
-  // IM App API 使用 camelCase RequestBody
-  if (url.includes('/app-api/im/') && typeof req.body === 'string') {
-    try {
-      const parsed = JSON.parse(req.body)
-      req.body = JSON.stringify(deepSnakeToCamel(parsed))
-    } catch {
-      /* 非 JSON 体忽略 */
     }
   }
 
@@ -69,11 +58,7 @@ client.interceptor.response.use((res: Response, body: any) => {
       throw new ApiError(body.code, body.msg || body.message || '业务错误')
     }
     // 登录等接口保留 camelCase；其余 IM 数据转 snake_case 兼容旧 UI
-    const data = body.data
-    if (res.url.includes('/app-api/im/auth/')) {
-      return data
-    }
-    return deepCamelToSnake(data)
+    return body.data
   }
 
   return body

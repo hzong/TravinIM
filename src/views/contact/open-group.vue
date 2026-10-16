@@ -51,7 +51,7 @@ const onSearchInput = debounce((value: string) => {
 
 const onJoin = (item: any) => {
   model.isShow = true
-  model.groupId = item.group_id
+  model.groupId = item.groupId
 }
 
 onLoadData()
@@ -92,7 +92,7 @@ onLoadData()
           <div class="cards">
             <GroupCard
               v-for="item in items"
-              :key="item.group_id"
+              :key="item.groupId"
               :avatar="item.avatar"
               :username="item.name"
               :gender="item.gender"

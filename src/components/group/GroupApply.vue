@@ -23,7 +23,7 @@ const onSubmit = async () => {
   const [err] = await fetchApi(
     fetchGroupApplyCreate,
     {
-      group_id: props.groupId,
+      groupId: props.groupId,
       remark: remark.value
     },
     { loading, successText: '入群申请提交成功...' }

@@ -10,7 +10,7 @@ const { startCountdown, Countdown } = useSmsLock('FORGET_EMAIL', 60)
 const router = useRouter()
 const formRef = ref()
 const rules = {
-  email_code: {
+  emailCode: {
     required: true,
     trigger: ['blur', 'input'],
     message: '验证码不能为空！'
@@ -31,7 +31,7 @@ const loading = ref(false)
 const model = reactive({
   username: '',
   password: '',
-  email_code: ''
+  emailCode: ''
 })
 
 const onForget = async () => {
@@ -40,7 +40,7 @@ const onForget = async () => {
     {
       email: model.username,
       password: model.password,
-      email_code: model.email_code
+      emailCode: model.emailCode
     },
     { loading, successText: '密码修改成功' }
   )
@@ -95,11 +95,11 @@ const onSendSms = async () => {
           />
         </n-form-item>
 
-        <n-form-item path="email_code" :show-label="false">
+        <n-form-item path="emailCode" :show-label="false">
           <n-input
             placeholder="邮箱验证码"
             :maxlength="6"
-            v-model:value="model.email_code"
+            v-model:value="model.emailCode"
             @keydown.enter="onValidate"
           />
 

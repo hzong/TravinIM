@@ -72,7 +72,7 @@ const {
     <header v-if="isPreviewMode" class="el-header note-view-desc text-ellipsis border-top">
       <p>
         <n-icon class="icon" size="15" :component="Time" />
-        <span>更新于 {{ detail.updated_at.substring(0, 16) }}</span>
+        <span>更新于 {{ detail.updatedAt.substring(0, 16) }}</span>
       </p>
 
       <p class="pointer">

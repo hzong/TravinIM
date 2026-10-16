@@ -14,14 +14,14 @@ class Base {
     return useUserStore().uid
   }
 
-  getTalkParams(): { talk_mode: number; to_from_id: number; index_name: string } {
+  getTalkParams(): { talkMode: number; toId: number; index_name: string } {
     const dialogueStore = useDialogueStore()
 
-    const { talk_mode, to_from_id } = dialogueStore.target
+    const { talkMode, toId } = dialogueStore.target
 
     return {
-      talk_mode,
-      to_from_id,
+      talkMode,
+      toId,
       index_name: dialogueStore.index_name
     }
   }
@@ -29,13 +29,13 @@ class Base {
   /**
    * 判断消息是否来自当前对话
    *
-   * @param {Number} talk_mode 聊天消息类型[1:私信;2:群聊;]
-   * @param {Number} to_from_id 发送者ID
+   * @param {Number} talkMode 聊天消息类型[1:私信;2:群聊;]
+   * @param {Number} toId 发送者ID
    */
-  isTalk(talk_mode: number, to_from_id: number): boolean {
+  isTalk(talkMode: number, toId: number): boolean {
     const params = this.getTalkParams()
 
-    return params.to_from_id == to_from_id && talk_mode == params.talk_mode
+    return params.toId == toId && talkMode == params.talkMode
   }
 
   /**

@@ -54,14 +54,14 @@ const indexName = computed(() => dialogueStore.index_name)
 const onTabTalk = (item: ISession, follow = false) => {
   if (item.index_name === indexName.value) return
 
-  const data = { talk_mode: item.talk_mode, to_from_id: item.to_from_id, session_no: item.session_no }
+  const data = { talkMode: item.talkMode, toId: item.toId, sessionNo: item.sessionNo }
 
   bus.emit(SessionConst.Switch, data)
 
   searchKeyword.value = ''
   dialogueStore.setDialogue(item)
 
-  if (item.unread_num > 0) {
+  if (item.unreadNum > 0) {
     talkStore.clearUnreadNum(item.index_name)
     fetchTalkSessionClearUnreadNum(data)
   }
@@ -88,8 +88,8 @@ const onKeywordChange = () => {
 
 const onGroupLaunchCreate = (groupId: number, groupName: string) => {
   const item = formatTalkItem({
-    talk_mode: 2,
-    to_from_id: groupId,
+    talkMode: 2,
+    toId: groupId,
     name: groupName
   })
 

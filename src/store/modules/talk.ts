@@ -15,11 +15,11 @@ export const useTalkStore = defineStore('talk', {
   }),
 
   getters: {
-    topItems: (state) => state.items.filter((item) => item.is_top === 1),
-    unreadItems: (state) => state.items.filter((item) => item.unread_num > 0),
-    groupItems: (state) => state.items.filter((item) => item.talk_mode === 2),
-    friendItems: (state) => state.items.filter((item) => item.talk_mode === 1),
-    talkUnreadNum: (state) => state.items.reduce((total, item) => total + item.unread_num, 0)
+    topItems: (state) => state.items.filter((item) => item.isTop === 1),
+    unreadItems: (state) => state.items.filter((item) => item.unreadNum > 0),
+    groupItems: (state) => state.items.filter((item) => item.talkMode === 2),
+    friendItems: (state) => state.items.filter((item) => item.talkMode === 1),
+    talkUnreadNum: (state) => state.items.reduce((total, item) => total + item.unreadNum, 0)
   },
 
   actions: {
@@ -51,7 +51,7 @@ export const useTalkStore = defineStore('talk', {
     },
 
     updateMessage(
-      params: Pick<ISession, 'index_name' | 'msg_text' | 'updated_at'>,
+      params: Pick<ISession, 'index_name' | 'msgText' | 'updatedAt'>,
       isClear = false
     ) {
       const index = this.findIndex(params.index_name)
@@ -60,13 +60,13 @@ export const useTalkStore = defineStore('talk', {
       const item = this.items[index]
 
       if (isClear) {
-        item.unread_num = 0
+        item.unreadNum = 0
       } else {
-        item.unread_num++
+        item.unreadNum++
       }
 
-      item.msg_text = params.msg_text
-      item.updated_at = params.updated_at
+      item.msgText = params.msgText
+      item.updatedAt = params.updatedAt
 
       if (index !== 0) {
         this.items.splice(index, 1)
@@ -77,12 +77,12 @@ export const useTalkStore = defineStore('talk', {
     clearUnreadNum(index_name: string) {
       const item = this.findItem(index_name)
       if (item) {
-        item.unread_num = 0
+        item.unreadNum = 0
       }
     },
 
-    setRemark(params: { user_id: number; remark: string }) {
-      const item = this.findItem(`1_${params.user_id}`)
+    setRemark(params: { userId: number; remark: string }) {
+      const item = this.findItem(`1_${params.userId}`)
       if (item) {
         item.remark = params.remark
       }
@@ -102,7 +102,7 @@ export const useTalkStore = defineStore('talk', {
 
           const draft = editorDraftStore.items[value.index_name]
           if (draft) {
-            value.draft_text = JSON.parse(draft).text || ''
+            value.draftText = JSON.parse(draft).text || ''
           }
 
           return value
@@ -110,12 +110,12 @@ export const useTalkStore = defineStore('talk', {
 
       // 排序
       this.items = items.sort((a: ISession, b: ISession) => {
-        return b.updated_at.localeCompare(a.updated_at)
+        return b.updatedAt.localeCompare(a.updatedAt)
       })
     },
 
-    async toTalk(talk_mode: number, to_from_id: number, router: any) {
-      const indexName = `${talk_mode}_${to_from_id}`
+    async toTalk(talkMode: number, toId: number, router: any) {
+      const indexName = `${talkMode}_${toId}`
       const route = {
         path: '/message',
         query: {
@@ -128,7 +128,7 @@ export const useTalkStore = defineStore('talk', {
         return await router.push(route)
       }
 
-      const [err, data] = await fetchApi(fetchTalkSessionCreate, { talk_mode, to_from_id })
+      const [err, data] = await fetchApi(fetchTalkSessionCreate, { talkMode, toId })
       if (err) return
 
       if (this.findIndex(indexName) === -1) {

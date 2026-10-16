@@ -1,9 +1,9 @@
 // 会话最后一条消息
 export interface ISessionLastMessage {
-  msg_id: string // 消息ID
+  msgId: string // 消息ID
   sequence: number // 消息时序ID（消息排序）
-  msg_type: number // 消息类型
-  user_id: number // 发送者ID
+  msgType: number // 消息类型
+  userId: number // 发送者ID
   receiver_id: number // 接受者ID
   content: string // 消息内容
   mention: number[] // 提及列表
@@ -12,31 +12,31 @@ export interface ISessionLastMessage {
 // 会话列表
 export interface ISession {
   index_name: string // 索引名称
-  talk_mode: number // 聊天类型
-  to_from_id: number // 接收者id
-  session_no?: string // 服务端会话号
+  talkMode: number // 聊天类型
+  toId: number // 接收者id
+  sessionNo?: string // 服务端会话号
   name: string // 昵称
   avatar: string // 头像
   remark: string // 备注
-  is_disturb: number // 是否免打扰
-  is_robot: number // 是否机器人
-  is_top: number // 置顶
-  unread_num: number // 未读消息数
-  updated_at: string // 最后发送时间
-  msg_text?: string // 消息内容
-  draft_text?: string // 草稿文本
+  isDisturb: number // 是否免打扰
+  isRobot: number // 是否机器人
+  isTop: number // 置顶
+  unreadNum: number // 未读消息数
+  updatedAt: string // 最后发送时间
+  msgText?: string // 消息内容
+  draftText?: string // 草稿文本
 }
 
 // 消息记录
 export interface ITalkRecord {
-  msg_id: string // 消息ID
+  msgId: string // 消息ID
   sequence: number // 消息时序ID（消息排序）
-  msg_type: number // 消息类型
-  from_id: number // 发送者id
+  msgType: number // 消息类型
+  fromId: number // 发送者id
   nickname: string // 昵称
   avatar: string // 头像
-  is_revoked: number // 是否撤回
-  send_time: string // 发送时间
+  isRevoked: number // 是否撤回
+  sendTime: string // 发送时间
   extra: any // 消息内容
   quote: any // 消息内容
   status: number // 消息状态 1发送成功 2发送中 3发送失败
@@ -60,10 +60,10 @@ export interface ITalkRecordExtraFile {
 }
 
 export interface ITalkRecordExtraForward {
-  msg_ids: number[]
+  msgIds: number[]
   receiver_id: number
   talk_type: number
-  user_id: number
+  userId: number
   records: {
     nickname: string
     content: string

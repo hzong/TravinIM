@@ -34,7 +34,7 @@ const onSubmit = async () => {
     return onShowError(true)
   }
 
-  toShowUserInfo(data.user_id)
+  toShowUserInfo(data.userId)
   onClose()
 }
 

@@ -32,7 +32,7 @@ const filterSearch = computed(() => {
 
 const onLoadData = async () => {
   const [err, data] = await fetchApi(fetchGroupApplyList, {
-    group_id: props.groupId
+    groupId: props.groupId
   })
 
   if (!err) {
@@ -41,7 +41,7 @@ const onLoadData = async () => {
 }
 
 const onUserInfo = (item: GroupApplyListResponse_Item) => {
-  toShowUserInfo(item.user_id)
+  toShowUserInfo(item.userId)
 }
 
 const onRowClick = (item: GroupApplyListResponse_Item) => {

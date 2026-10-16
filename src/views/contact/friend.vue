@@ -32,7 +32,7 @@ const filter: any = computed(() => {
       return findIndex != -1
     }
 
-    return findIndex != -1 && index.value == item.group_id
+    return findIndex != -1 && index.value == item.groupId
   })
 })
 
@@ -51,11 +51,11 @@ const loadContactGroupList = async () => {
 }
 
 const onToTalk = (item: ContactListResponse_Item) => {
-  talkStore.toTalk(1, item.user_id, router)
+  talkStore.toTalk(1, item.userId, router)
 }
 
 const onInfo = (item: ContactListResponse_Item) => {
-  toShowUserInfo(item.user_id)
+  toShowUserInfo(item.userId)
 }
 
 const onToolsMenu = (value: string) => {
@@ -69,23 +69,23 @@ const onToolsMenu = (value: string) => {
   }
 }
 
-const onChangeRemark = (data: { user_id: number; remark: string }) => {
-  let item: any = items.value.find((item: ContactListResponse_Item) => item.user_id == data.user_id)
+const onChangeRemark = (data: { userId: number; remark: string }) => {
+  let item: any = items.value.find((item: ContactListResponse_Item) => item.userId == data.userId)
   item && (item.remark = data.remark)
 }
 
 const onClickDropdown = (key: string, item: ContactListResponse_Item) => {
-  const { user_id, nickname, remark } = item
+  const { userId, nickname, remark } = item
 
   switch (key) {
     case 'change-remark':
-      onChangeContactRemark({ user_id, nickname, remark }, (): void => {
+      onChangeContactRemark({ userId, nickname, remark }, (): void => {
         loadContactList()
       })
 
       break
     case 'delete-contact':
-      onDeleteContact({ user_id, nickname, remark }, () => {
+      onDeleteContact({ userId, nickname, remark }, () => {
         loadContactList()
       })
       break
@@ -153,7 +153,7 @@ useEventBus([{ name: ContactConst.UpdateRemark, event: onChangeRemark }])
     <main class="el-main" style="padding-bottom: 10px" v-if="filter.length">
       <n-virtual-list style="max-height: inherit" :item-size="80" :items="filter">
         <template #default="{ item }">
-          <div :key="item.user_id" class="item-box pointer">
+          <div :key="item.userId" class="item-box pointer">
             <div class="avatar" @click="onInfo(item)">
               <im-avatar :src="item.avatar" :size="40" :username="item.nickname" />
             </div>

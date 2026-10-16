@@ -15,7 +15,7 @@ const props = defineProps({
     type: Number,
     default: 0
   },
-  toFromId: {
+  toId: {
     type: Number,
     default: 0
   }
@@ -54,9 +54,9 @@ const loadChatRecord = async (): Promise<boolean> => {
   if (model.loading) return true
 
   const params = {
-    talk_mode: props.talkMode,
-    to_from_id: props.toFromId,
-    msg_type: model.msgType,
+    talkMode: props.talkMode,
+    toId: props.toId,
+    msgType: model.msgType,
     cursor: model.cursor,
     limit: model.limit
   }

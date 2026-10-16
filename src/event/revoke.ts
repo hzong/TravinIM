@@ -1,91 +1,57 @@
 import Base from './base'
 import { useDialogueStore, useTalkStore } from '@/store'
 import { datetime } from '@/utils/datetime'
+import { myUserNo, resolveUserIdByUserNo } from '@/utils/im-user-resolve'
 
-/**
- * 好友状态事件
- */
 class Revoke extends Base {
-  /**
-   * @var resource 资源
-   */
-  resource: any
+  fromId = 0
+  toId = 0
+  talkMode = 0
+  msgId = ''
+  fromUserNo = ''
 
-  /**
-   * 发送者ID
-   */
-  from_id: number = 0
-
-  /**
-   * 接收者ID
-   */
-  to_from_id: number = 0
-
-  /**
-   * 聊天类型[1:私聊;2:群聊;]
-   */
-  talk_mode: number = 0
-
-  /**
-   * 消息ID
-   */
-  msg_id: number = 0
-
-  /**
-   * 初始化构造方法
-   *
-   * @param {Object} resource Socket消息
-   */
-  constructor(resource: any) {
+  constructor(envelope: any) {
     super()
-
-    this.resource = resource
-    this.from_id = resource.from_id
-    this.to_from_id = resource.to_from_id
-    this.talk_mode = resource.talk_mode
-    this.msg_id = resource.msg_id
-
+    const payload = envelope?.payload ?? {}
+    this.talkMode = Number(payload.talkMode) || 0
+    this.fromUserNo = payload.fromId == null ? '' : String(payload.fromId)
+    this.fromId = resolveUserIdByUserNo(this.fromUserNo)
+    const toRaw = payload.toId == null ? '' : String(payload.toId)
+    if (this.talkMode === 2) {
+      this.toId = Number(toRaw) || 0
+    } else if (this.fromUserNo && this.fromUserNo === myUserNo()) {
+      this.toId = resolveUserIdByUserNo(toRaw)
+    } else {
+      this.toId = this.fromId
+    }
+    this.msgId = payload.msgId || ''
     this.handle()
   }
 
-  /**
-   * 判断消息发送者是否来自于我
-   * @returns
-   */
   isCurrSender(): boolean {
-    return this.from_id == this.getAccountId()
+    return this.fromUserNo ? this.fromUserNo === myUserNo() : this.fromId == this.getAccountId()
   }
 
-  /**
-   * 获取对话索引
-   *
-   * @return String
-   */
   getIndexName(): string {
-    if (this.talk_mode == 2) {
-      return `${this.talk_mode}_${this.to_from_id}`
+    if (this.talkMode == 2) {
+      return `${this.talkMode}_${this.toId}`
     }
-
-    const to_from_id = this.isCurrSender() ? this.to_from_id : this.from_id
-
-    return `${this.talk_mode}_${to_from_id}`
+    const peerId = this.isCurrSender() ? this.toId : this.fromId
+    return `${this.talkMode}_${peerId}`
   }
 
   handle() {
     useTalkStore().updateItem({
       index_name: this.getIndexName(),
-      msg_text: this.resource.remark,
-      updated_at: datetime()
+      msgText: '[撤回了一条消息]',
+      updatedAt: datetime()
     })
-
-    // 判断当前是否正在和好友对话
-    if (!this.isTalk(this.talk_mode, this.to_from_id)) {
+    if (!this.isTalk(this.talkMode, this.toId)) {
       return
     }
-
     useDialogueStore().updateDialogueRecord({
-      msg_id: this.msg_id,
-      is_revoked: 1
+      msgId: this.msgId,
+      isRevoked: 1
     })
   }
 }

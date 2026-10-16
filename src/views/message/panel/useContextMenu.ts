@@ -17,14 +17,14 @@ export function useContextMenu(chat: any) {
   const contextMenuOptions = (item: ITalkRecord) => {
     const options: any[] = []
 
-    if ([1, 3].includes(item.msg_type)) {
+    if ([1, 3].includes(item.msgType)) {
       options.push({ label: '复制', key: 'copy' })
     }
 
     // 仅支持2分钟内的消息撤回
     if (
-      Date.now() - new Date(item.send_time).getTime() < 2 * 60 * 1000 &&
-      item.from_id === userStore.uid
+      Date.now() - new Date(item.sendTime).getTime() < 2 * 60 * 1000 &&
+      item.fromId === userStore.uid
     ) {
       // 目前仅支持自己发送的消息才能撤回
       options.push({ label: '撤回', key: 'revoke' })
@@ -34,11 +34,11 @@ export function useContextMenu(chat: any) {
     options.push({ label: '删除', key: 'delete' })
     options.push({ label: '多选', key: 'multiSelect' })
 
-    if ([3, 4, 5].includes(item.msg_type)) {
+    if ([3, 4, 5].includes(item.msgType)) {
       options.push({ label: '下载', key: 'download' })
     }
 
-    if ([3].includes(item.msg_type)) {
+    if ([3].includes(item.msgType)) {
       options.push({ label: '收藏', key: 'collect' })
     }
 
@@ -67,13 +67,13 @@ export function useContextMenu(chat: any) {
 
   const onQuote = (item: ITalkRecord) => {
     const data = {
-      id: item.msg_id,
-      title: `${item.nickname} ${item.send_time}`,
+      id: item.msgId,
+      title: `${item.nickname} ${item.sendTime}`,
       describe: '',
       image: ''
     }
 
-    switch (item.msg_type) {
+    switch (item.msgType) {
       case 1:
         data.describe = item?.extra?.content
         break // 文本消息
@@ -116,7 +116,7 @@ export function useContextMenu(chat: any) {
   }
 
   const onCopy = (item: ITalkRecord) => {
-    if (item.msg_type == 1) {
+    if (item.msgType == 1) {
       if (item.extra.content && item.extra.content.length > 0) {
         return clipboard(htmlDecode(item.extra.content), () => message.success('复制成功'))
       }
@@ -130,16 +130,16 @@ export function useContextMenu(chat: any) {
   }
 
   const onDownload = (item: ITalkRecord) => {
-    if (item.msg_type == 3) {
+    if (item.msgType == 3) {
       const filename = getFilenameFromUrl(item.extra?.url)
       return downloadImage(item.extra.url, filename || '文件')
     }
 
-    if (item.msg_type == 4) {
+    if (item.msgType == 4) {
       return message.info('音频暂不支持下载!')
     }
 
-    if (item.msg_type == 5) {
+    if (item.msgType == 5) {
       return message.info('视频暂不支持下载!')
     }
 
@@ -147,17 +147,17 @@ export function useContextMenu(chat: any) {
   }
 
   const onRevoke = (item: ITalkRecord) => {
-    dialogueStore.revokeRecord(item.msg_id)
-    item.is_revoked = 1
+    dialogueStore.revokeRecord(item.msgId)
+    item.isRevoked = 1
   }
 
   const onDelete = (item: ITalkRecord) => {
-    dialogueStore.deleteRecord([item.msg_id])
+    dialogueStore.deleteRecord([item.msgId])
   }
 
   const onMultiSelect = (item: ITalkRecord) => {
     chat.value?.enableMultiSelect(true)
-    chat.value?.setMultiSelect([item.msg_id])
+    chat.value?.setMultiSelect([item.msgId])
   }
 
   const onCloseMultiSelect = () => {
@@ -186,13 +186,13 @@ export function useContextMenu(chat: any) {
     }
 
     dialogueStore.forwardRecord({
-      talk_mode: dialogueStore.target.talk_mode,
-      to_from_id: dialogueStore.target.to_from_id,
+      talkMode: dialogueStore.target.talkMode,
+      toId: dialogueStore.target.toId,
       body: {
         action: mode == 'merge' ? 2 : 1,
-        msg_ids: chat.value?.getMultiSelect(),
-        user_ids: items.filter((item) => item.type == 1).map((item) => item.id),
-        group_ids: items.filter((item) => item.type == 2).map((item) => item.id)
+        msgIds: chat.value?.getMultiSelect(),
+        userIds: items.filter((item) => item.type == 1).map((item) => item.id),
+        groupIds: items.filter((item) => item.type == 2).map((item) => item.id)
       }
     })
 

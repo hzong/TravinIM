@@ -53,7 +53,7 @@ export function applyImAuthSession(data: ImAuthSession & Record<string, any>): v
   const session: ImAuthSession = {
     accessToken,
     expiresTime: expiresTime!,
-    userId: data.userId ?? data.user_id,
+    userId: data.userId ?? data.userId,
     userNo: data.userNo ?? data.user_no,
     appCode: data.appCode ?? data.app_code,
     mqttUsername: data.mqttUsername ?? data.mqtt_username,

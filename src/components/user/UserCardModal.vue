@@ -36,7 +36,7 @@ const isOpenFrom = ref(false)
 const applyRemark = ref('')
 const friendRemark = ref('')
 const userInfo: any = reactive({
-  user_id: 0,
+  userId: 0,
   avatar: '',
   gender: 0,
   mobile: '',
@@ -44,8 +44,8 @@ const userInfo: any = reactive({
   nickname: '',
   email: '',
   relation: 1, // 关系 1陌生人 2好友 3企业同事 4本人
-  contact_group_id: 0,
-  contact_remark: ''
+  contactGroupId: 0,
+  contactRemark: ''
 })
 
 const genders = {
@@ -59,19 +59,19 @@ const editCardPopover: any = ref(false)
 const options = ref<any>([])
 const groupName = computed(() => {
   const item = options.value.find((item: any) => {
-    return item.key == userInfo.contact_group_id
+    return item.key == userInfo.contactGroupId
   })
 
   return item?.label || '-'
 })
 
 const onLoadUser = async () => {
-  const [err, data] = await fetchApi(fetchContactDetail, { user_id: props.userId }, { loading })
+  const [err, data] = await fetchApi(fetchContactDetail, { userId: props.userId }, { loading })
 
   if (err) return
 
   Object.assign(userInfo, {
-    user_id: data.user_id,
+    userId: data.userId,
     avatar: data.avatar,
     gender: data.gender,
     mobile: data.mobile,
@@ -79,11 +79,11 @@ const onLoadUser = async () => {
     nickname: data.nickname,
     email: data.email,
     relation: data.relation,
-    contact_group_id: data.contact_group_id,
-    contact_remark: data.contact_remark
+    contactGroupId: data.contactGroupId,
+    contactRemark: data.contactRemark
   })
 
-  friendRemark.value = data.contact_remark
+  friendRemark.value = data.contactRemark
 }
 
 const onLoadUserGroup = async () => {
@@ -113,7 +113,7 @@ const onJoinContact = async () => {
   const [err] = await fetchApi(
     fetchContactApplyCreate,
     {
-      user_id: props.userId,
+      userId: props.userId,
       remark: applyRemark.value
     },
     options
@@ -127,10 +127,10 @@ const onJoinContact = async () => {
 const onChangeRemark = async () => {
   const onSuccess = () => {
     editCardPopover.value.setShow(false)
-    userInfo.contact_remark.remark = friendRemark.value
+    userInfo.contactRemark = friendRemark.value
 
     const params = {
-      user_id: props.userId,
+      userId: props.userId,
       remark: friendRemark.value
     }
 
@@ -141,7 +141,7 @@ const onChangeRemark = async () => {
   const [err] = await fetchApi(
     fetchContactEditRemark,
     {
-      user_id: props.userId,
+      userId: props.userId,
       remark: friendRemark.value
     },
     {
@@ -157,8 +157,8 @@ const handleSelectGroup = async (value: number) => {
   const [err] = await fetchApi(
     fetchContactChangeGroup,
     {
-      user_id: props.userId,
-      group_id: value
+      userId: props.userId,
+      groupId: value
     },
     {
       successText: '分组修改成功'
@@ -166,7 +166,7 @@ const handleSelectGroup = async (value: number) => {
   )
 
   if (err) return
-  userInfo.contact_group_id = value
+  userInfo.contactGroupId = value
 }
 
 const onClose = () => {
@@ -185,7 +185,7 @@ onLoadUserGroup()
           class="avatar"
           :size="60"
           :src="userInfo.avatar"
-          :username="userInfo.contact_remark || userInfo.nickname"
+          :username="userInfo.contactRemark || userInfo.nickname"
           :font-size="30"
         />
 
@@ -199,7 +199,7 @@ onLoadUserGroup()
         </div>
 
         <div class="nickname text-ellipsis">
-          {{ userInfo.contact_remark || userInfo.nickname || '-' }}
+          {{ userInfo.contactRemark || userInfo.nickname || '-' }}
         </div>
       </header>
 
@@ -227,7 +227,7 @@ onLoadUserGroup()
             <n-popover trigger="click" placement="top-start" ref="editCardPopover">
               <template #trigger>
                 <span class="text edit pointer text-ellipsis">
-                  {{ userInfo.contact_remark || '-' }}&nbsp;&nbsp;
+                  {{ userInfo.contactRemark || '-' }}&nbsp;&nbsp;
                 </span>
               </template>
 

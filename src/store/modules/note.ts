@@ -47,7 +47,7 @@ interface NoteStoreState {
     annex_list: NoteFileItem[]
     md_content: string
     created_at: string
-    updated_at: string
+    updatedAt: string
   }
 }
 
@@ -78,7 +78,7 @@ export const useNoteStore = defineStore('note', {
         md_content: '',
         created_at: '',
         class_name: '',
-        updated_at: ''
+        updatedAt: ''
       }
     }
   },
@@ -105,7 +105,7 @@ export const useNoteStore = defineStore('note', {
         status: 1,
         tag_ids: [],
         title: '',
-        updated_at: ''
+        updatedAt: ''
       }
 
       this.view.loadId = 1

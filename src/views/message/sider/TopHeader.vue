@@ -22,9 +22,9 @@ defineProps<{
         >
           <im-avatar :src="item.avatar" :size="34" :username="item.name" />
 
-          <span class="icon-mark robot" v-show="item.is_robot === 1"> 助 </span>
+          <span class="icon-mark robot" v-show="item.isRobot === 1"> 助 </span>
 
-          <span class="icon-mark group" v-show="item.talk_mode == 2"> 群 </span>
+          <span class="icon-mark group" v-show="item.talkMode == 2"> 群 </span>
 
           <span class="text">{{ item.remark || item.name }}</span>
         </div>

@@ -34,9 +34,9 @@ export const useDialogueStore = defineStore('dialogue', {
       target: {
         username: '',
         description: '',
-        talk_mode: 0, // 对话来源[1:私聊;2:群聊]
-        to_from_id: 0, // 对话对象ID[群ID或者好友ID]
-        session_no: ''
+        talkMode: 0, // 对话来源[1:私聊;2:群聊]
+        toId: 0, // 对话对象ID[群ID或者好友ID]
+        sessionNo: ''
       },
 
       // 好友是否正在输入文字
@@ -60,27 +60,27 @@ export const useDialogueStore = defineStore('dialogue', {
   },
   getters: {
     // 当前对话是否是群聊
-    isGroupTalk: (state) => state.target.talk_mode === TalkModeEnum.Group
+    isGroupTalk: (state) => state.target.talkMode === TalkModeEnum.Group
   },
   actions: {
     // 更新对话信息
     setDialogue(data: any = {}) {
       this.target = {
         username: data.remark || data.name,
-        talk_mode: data.talk_mode,
-        to_from_id: data.to_from_id,
-        session_no: data.session_no || '',
+        talkMode: data.talkMode,
+        toId: data.toId,
+        sessionNo: data.sessionNo || '',
         description: ''
       }
 
-      this.index_name = `${data.talk_mode}_${data.to_from_id}`
+      this.index_name = `${data.talkMode}_${data.toId}`
       this.records = []
       this.unreadBubble = 0
       this.members = []
       // 是机器人则不显示编辑器
-      this.isShowEditor = data?.is_robot === 1 ? false : true
+      this.isShowEditor = data?.isRobot === 1 ? false : true
 
-      if (data.talk_mode == TalkModeEnum.Group) {
+      if (data.talkMode == TalkModeEnum.Group) {
         this.updateGroupMembers()
       } else {
         this.loadContactDetail()
@@ -89,15 +89,15 @@ export const useDialogueStore = defineStore('dialogue', {
 
     // 更新提及列表
     async updateGroupMembers() {
-      const { to_from_id: group_id } = this.target
+      const { toId: groupId } = this.target
 
       this.members = []
-      const [err, data] = await fetchApi(fetchGroupMemberList, { group_id })
+      const [err, data] = await fetchApi(fetchGroupMemberList, { groupId })
 
-      if (err || this.target.to_from_id != group_id) return
+      if (err || this.target.toId != groupId) return
 
       this.members = data?.items.map((item: any) => ({
-        id: item.user_id,
+        id: item.userId,
         nickname: item.nickname,
         avatar: item.avatar,
         gender: item.gender,
@@ -108,9 +108,9 @@ export const useDialogueStore = defineStore('dialogue', {
 
     // 更新提及列表
     async loadContactDetail() {
-      const { to_from_id: user_id } = this.target
-      const [err, data] = await fetchApi(fetchContactDetail, { user_id })
-      if (err || this.target.to_from_id != user_id) return
+      const { toId: userId } = this.target
+      const [err, data] = await fetchApi(fetchContactDetail, { userId })
+      if (err || this.target.toId != userId) return
 
       this.target.description = data?.motto || ''
     },
@@ -132,17 +132,17 @@ export const useDialogueStore = defineStore('dialogue', {
 
     // 更新对话记录
     updateDialogueRecord(params: any) {
-      const { msg_id = '' } = params
+      const { msgId = '' } = params
 
-      const item = this.records.find((item: ITalkRecord) => item.msg_id === msg_id)
+      const item = this.records.find((item: ITalkRecord) => item.msgId === msgId)
 
       item && Object.assign(item, params)
     },
 
     // 批量删除对话记录
     batchDelDialogueRecord(msgIds: string[]) {
-      msgIds.forEach((msg_id) => {
-        const index = this.records.findIndex((item: ITalkRecord) => item.msg_id === msg_id)
+      msgIds.forEach((msgId) => {
+        const index = this.records.findIndex((item: ITalkRecord) => item.msgId === msgId)
 
         if (index >= 0) this.records.splice(index, 1)
       })
@@ -168,10 +168,10 @@ export const useDialogueStore = defineStore('dialogue', {
     // 删除聊天记录
     async deleteRecord(msgIds: string[]) {
       const [err] = await fetchApi(fetchMessageDelete, {
-        talk_mode: this.target.talk_mode,
-        to_from_id: this.target.to_from_id,
-        session_no: this.target.session_no,
-        msg_ids: msgIds
+        talkMode: this.target.talkMode,
+        toId: this.target.toId,
+        sessionNo: this.target.sessionNo,
+        msgIds: msgIds
       })
 
       if (err) return
@@ -180,17 +180,17 @@ export const useDialogueStore = defineStore('dialogue', {
     },
 
     // 撤销聊天记录
-    async revokeRecord(msg_id: string) {
+    async revokeRecord(msgId: string) {
       const [err] = await fetchApi(fetchMessageRevoke, {
-        talk_mode: this.target.talk_mode,
-        to_from_id: this.target.to_from_id,
-        session_no: this.target.session_no,
-        msg_id
+        talkMode: this.target.talkMode,
+        toId: this.target.toId,
+        sessionNo: this.target.sessionNo,
+        msgId
       })
 
       if (err) return
 
-      this.updateDialogueRecord({ msg_id, is_revoked: 1 })
+      this.updateDialogueRecord({ msgId, isRevoked: 1 })
     },
 
     // 转发聊天记录

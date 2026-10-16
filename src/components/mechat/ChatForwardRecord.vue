@@ -37,8 +37,8 @@ const loadChatRecord = async () => {
   const [err, data] = await fetchApi(
     fetchMessageForwardRecords,
     {
-      msg_ids: props.msgIds as string[],
-      talk_mode: props.talkMode
+      msgIds: props.msgIds as string[],
+      talkMode: props.talkMode
     },
     { loading }
   )

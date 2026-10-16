@@ -33,8 +33,8 @@ const breadcrumb = ref<
 >([{ name: '企业成员', dept_id: -1 }])
 
 const onToTalk = (item: any) => {
-  if (userStore.uid != item.user_id) {
-    talkStore.toTalk(1, item.user_id, router)
+  if (userStore.uid != item.userId) {
+    talkStore.toTalk(1, item.userId, router)
   } else {
     message.info('禁止给自己发送消息!')
   }
@@ -77,7 +77,7 @@ function toTree(list: any[]): any[] {
 }
 
 const onInfo = (item: any) => {
-  toShowUserInfo(item.user_id)
+  toShowUserInfo(item.userId)
 }
 
 const onNodeProps = ({ option }) => {
@@ -213,7 +213,7 @@ onMounted(() => {
         <main class="el-main" v-if="filter.length" style="padding-bottom: 10px">
           <n-virtual-list style="max-height: inherit" :item-size="80" :items="filter">
             <template #default="{ item }">
-              <div :key="item.user_id" class="item-box pointer">
+              <div :key="item.userId" class="item-box pointer">
                 <div class="avatar" @click="onInfo(item)">
                   <im-avatar :src="item.avatar" :size="40" :username="item.nickname" />
                 </div>

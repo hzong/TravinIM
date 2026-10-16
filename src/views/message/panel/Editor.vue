@@ -30,7 +30,7 @@ const { addAsyncMessage } = useAsyncMessageStore()
 interface IEditor {
   uid: number
   talkMode: number
-  toFromId: number
+  toId: number
   indexName: string
   online: boolean
   members: any[]
@@ -50,9 +50,9 @@ const onSendMessage = async (data: any = {}): Promise<boolean> => {
 
   const params = {
     ...data,
-    talk_mode: props.talkMode,
-    to_from_id: props.toFromId,
-    session_no: dialogueStore.target.session_no
+    talkMode: props.talkMode,
+    toId: props.toId,
+    sessionNo: dialogueStore.target.sessionNo
   }
 
   // 异步发送
@@ -70,7 +70,7 @@ const onSendMessage = async (data: any = {}): Promise<boolean> => {
 const onSendTextEvent = (data: any): Promise<boolean> => {
   return onSendMessage({
     type: 'text',
-    quote_id: data.quoteId,
+    quoteId: data.quoteId,
     body: {
       content: data.items[0].content,
       text: data.items[0].content,
@@ -133,14 +133,14 @@ const onSendFileEvent = async (data: any) => {
     return true
   }
 
-  uploadsStore.initUploadFile(data, props.talkMode, props.toFromId, dialogueStore.target.username)
+  uploadsStore.initUploadFile(data, props.talkMode, props.toId, dialogueStore.target.username)
   return true
 }
 
 // 发送投票消息
 const onSendVoteEvent = async (data: any) => {
   const [err] = await fetchApi(fetchGroupVoteCreate, {
-    group_id: props.toFromId,
+    groupId: props.toId,
     mode: data.mode,
     is_anonymous: data.is_anonymous,
     title: data.title,
@@ -163,7 +163,7 @@ const onSendEmoticonEvent = (data: any): Promise<boolean> => {
 const onSendMixedEvent = (data: any): Promise<boolean> => {
   return onSendMessage({
     type: 'mixed',
-    quote_id: data.quoteId,
+    quoteId: data.quoteId,
     body: {
       items: data.items
     }
@@ -171,10 +171,10 @@ const onSendMixedEvent = (data: any): Promise<boolean> => {
 }
 
 const onKeyboardPush = throttle(() => {
-  const peerUserNo = resolveUserNoByUserId(props.toFromId)
+  const peerUserNo = resolveUserNoByUserId(props.toId)
   ws.emit('im.message.keyboard', {
-    talk_mode: props.talkMode,
-    to_from_id: peerUserNo || props.toFromId,
+    talkMode: props.talkMode,
+    toId: peerUserNo || props.toId,
     action: 'typing'
   })
 }, 3000)
@@ -183,7 +183,7 @@ const onKeyboardPush = throttle(() => {
 const onInputEvent = async (data: any) => {
   talkStore.updateItem({
     index_name: props.indexName,
-    draft_text: data
+    draftText: data
   })
 
   // 判断对方是否在线和是否需要推送
@@ -248,7 +248,7 @@ const onEditorEvent = async (event: string, data: any) => {
   <HistoryRecord
     v-if="isShowHistory"
     :talk-mode="talkMode"
-    :to-from-id="toFromId"
+    :to-id="toId"
     @close="isShowHistory = false"
   />
 </template>

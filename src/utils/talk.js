@@ -20,40 +20,40 @@ export function playMusic(muted = false) {
  */
 export function formatTalkItem(params) {
   let options = {
-    talk_mode: 1,
-    to_from_id: 0,
+    talkMode: 1,
+    toId: 0,
     name: '未设置',
     remark: '',
     avatar: '',
-    is_disturb: 2,
-    is_top: 2,
-    is_robot: 2,
-    unread_num: 0,
+    isDisturb: 0,
+    isTop: 0,
+    isRobot: 0,
+    unreadNum: 0,
     content: '...',
-    draft_text: '',
-    msg_text: '',
+    draftText: '',
+    msgText: '',
     index_name: '',
-    updated_at: datetime()
+    updatedAt: datetime()
   }
 
   const merged = {
     ...params,
-    talk_mode: params.talk_mode ?? params.talkMode,
-    to_from_id: params.to_from_id ?? params.toFromId,
-    is_disturb: params.is_disturb ?? params.isDisturb,
-    is_top: params.is_top ?? params.isTop,
-    is_robot: params.is_robot ?? params.isRobot,
-    unread_num: params.unread_num ?? params.unreadNum,
-    msg_text: params.msg_text ?? params.msgText,
-    updated_at: params.updated_at ?? params.updatedAt,
-    session_no: params.session_no ?? params.sessionNo ?? ''
+    talkMode: params.talkMode ?? params.talkMode,
+    toId: params.toId ?? params.toId,
+    isDisturb: params.isDisturb ?? params.isDisturb,
+    isTop: params.isTop ?? params.isTop,
+    isRobot: params.isRobot ?? params.isRobot,
+    unreadNum: params.unreadNum ?? params.unreadNum,
+    msgText: params.msgText ?? params.msgText,
+    updatedAt: params.updatedAt ?? params.updatedAt,
+    sessionNo: params.sessionNo ?? params.sessionNo ?? ''
   }
   options = { ...options, ...merged }
-  options.index_name = `${options.talk_mode}_${options.to_from_id}`
+  options.index_name = `${options.talkMode}_${options.toId}`
 
   const peerNo = params.peer_user_no ?? params.peerUserNo
-  if (peerNo && options.to_from_id) {
-    rememberUserNo(peerNo, options.to_from_id)
+  if (peerNo && options.toId) {
+    rememberUserNo(peerNo, options.toId)
   }
 
   return options

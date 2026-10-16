@@ -34,8 +34,8 @@ const customMessageRender = (item: any) => formatChatMessage(0, item)
 
 const onLoadData = async () => {
   const [err, data] = await fetchApi(fetchMessageForwardRecords, {
-    msg_ids: props.msgIds as string[],
-    talk_mode: props.talkMode
+    msgIds: props.msgIds as string[],
+    talkMode: props.talkMode
   })
 
   if (err) {

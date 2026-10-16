@@ -9,13 +9,13 @@ import { useDialogueStore } from './dialogue'
 import { useUserStore } from './user'
 
 type IAsyncMessage = {
-  msg_id?: string // 消息ID
-  req_id?: string // HTTP 幂等请求号，重试勿变
+  msgId?: string // 消息ID
+  reqId?: string // HTTP 幂等请求号，重试勿变
   type: string // 消息类型
-  talk_mode: number // 聊天类型
-  to_from_id: number // 聊天对象ID[群ID或者好友ID]
-  session_no?: string
-  quote_id: string // 引用消息ID
+  talkMode: number // 聊天类型
+  toId: number // 聊天对象ID[群ID或者好友ID]
+  sessionNo?: string
+  quoteId: string // 引用消息ID
   body: any // 消息体
 }
 
@@ -38,11 +38,11 @@ export const useAsyncMessageStore = defineStore('async-message', () => {
   const msgIdsSet = new Set<string>()
   // 添加待推送消息
   function addAsyncMessage(data: IAsyncMessage) {
-    data.msg_id = uuid()
-    data.req_id = data.req_id || uuid()
+    data.msgId = uuid()
+    data.reqId = data.reqId || uuid()
     items.push(data)
 
-    msgIdsSet.add(data.msg_id)
+    msgIdsSet.add(data.msgId)
 
     addRecordList(data)
     sendMessage(data)
@@ -57,17 +57,17 @@ export const useAsyncMessageStore = defineStore('async-message', () => {
           await sendMessage(message, retryCount + 1)
         } else {
           console.error(`Failed to send message after ${MAX_RETRIES} retries`, message)
-          updateMessageStatus(message.msg_id!, MESSAGE_STATUS_FAILED)
-          msgIdsSet.delete(message.msg_id!)
+          updateMessageStatus(message.msgId!, MESSAGE_STATUS_FAILED)
+          msgIdsSet.delete(message.msgId!)
         }
         return
       }
 
       // 更新对话记录状态
-      updateMessageStatus(message.msg_id!, MESSAGE_STATUS_SENT)
+      updateMessageStatus(message.msgId!, MESSAGE_STATUS_SENT)
 
       // 发送成功后将消息从待推送列表中移除
-      items = items.filter((item) => item.msg_id !== message.msg_id)
+      items = items.filter((item) => item.msgId !== message.msgId)
     } catch (error) {
       console.error('Error sending message', error, message)
     }
@@ -91,25 +91,25 @@ export const useAsyncMessageStore = defineStore('async-message', () => {
   // 推送到会话记录中
   async function addRecordList(data: IAsyncMessage) {
     const record = {
-      msg_id: data.msg_id as string,
+      msgId: data.msgId as string,
       sequence: 0,
-      msg_type: msgTypeMap[data.type],
-      from_id: uid,
+      msgType: msgTypeMap[data.type],
+      fromId: uid,
       nickname: nickname,
       avatar: avatar,
-      is_revoked: 2,
-      send_time: datetime(),
+      isRevoked: 2,
+      sendTime: datetime(),
       extra: data.body,
       quote: {},
       status: MESSAGE_STATUS_PENDING
     }
 
-    if (data.quote_id) {
-      const quote = dialogueStore.records.find((item) => item.msg_id === data.quote_id)
+    if (data.quoteId) {
+      const quote = dialogueStore.records.find((item) => item.msgId === data.quoteId)
       if (quote) {
         record.quote = {
-          quote_id: quote.msg_id,
-          msg_type: 1,
+          quoteId: quote.msgId,
+          msgType: 1,
           nickname: quote.nickname,
           content: quote.extra.content ?? '查看消息'
         }
@@ -124,20 +124,20 @@ export const useAsyncMessageStore = defineStore('async-message', () => {
   }
 
   // 更新消息状态
-  function updateMessageStatus(msg_id: string, status: number) {
+  function updateMessageStatus(msgId: string, status: number) {
     dialogueStore.records.forEach((item) => {
-      if (item.msg_id === msg_id) {
+      if (item.msgId === msgId) {
         item.status = status
       }
     })
   }
 
   const msgIdsCache = {
-    has(msg_id: string): boolean {
-      return msgIdsSet.has(msg_id)
+    has(msgId: string): boolean {
+      return msgIdsSet.has(msgId)
     },
-    clear(msg_id: string) {
-      msgIdsSet.delete(msg_id)
+    clear(msgId: string) {
+      msgIdsSet.delete(msgId)
     }
   }
 

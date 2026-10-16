@@ -52,7 +52,7 @@ export const useUserStore = defineStore('user', {
         /* 本地仍清掉登录态 */
       }
       this.$reset()
-      storage.remove('user_info')
+      storage.remove('userInfo')
       clearImSession()
       auth.deleteToken()
       location.reload()
@@ -67,20 +67,20 @@ export const useUserStore = defineStore('user', {
       const [err, data] = await fetchApi(fetchUserSetting, {})
       if (err) return
 
-      this.nickname = data.user_info.nickname
-      this.uid = data.user_info.id ?? data.user_info.uid
-      const userNo = data.user_info.user_no ?? data.user_info.userNo
+      this.nickname = data.userInfo.nickname
+      this.uid = data.userInfo.id ?? data.userInfo.uid
+      const userNo = data.userInfo.userNo
       if (userNo && this.uid) {
         rememberUserNo(userNo, this.uid)
       }
-      this.avatar = data.user_info.avatar
-      this.gender = data.user_info.gender
-      this.mobile = data.user_info.mobile || ''
-      this.email = data.user_info.email || ''
-      this.motto = data.user_info.motto
-      this.isQiye = data.user_info.is_qiye
+      this.avatar = data.userInfo.avatar
+      this.gender = data.userInfo.gender
+      this.mobile = data.userInfo.mobile || ''
+      this.email = data.userInfo.email || ''
+      this.motto = data.userInfo.motto
+      this.isQiye = data.userInfo.is_qiye
 
-      storage.set('user_info', data)
+      storage.set('userInfo', data)
     },
     async loadFriendApplyNum() {
       const [err, data] = await fetchApi(fetchContactApplyUnreadNum, {})

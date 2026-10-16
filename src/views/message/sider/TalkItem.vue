@@ -18,7 +18,7 @@ defineProps<{
     <div class="talk-item-avatar">
       <im-avatar :src="avatar" :size="34" :username="data.name" />
       <div class="top-mask" @click.stop="emit('top-talk', data)">
-        <n-icon :component="data.is_top === 1 ? ArrowDown : ArrowUp" />
+        <n-icon :component="data.isTop === 1 ? ArrowDown : ArrowUp" />
       </div>
     </div>
 
@@ -26,32 +26,32 @@ defineProps<{
       <div class="header">
         <div class="title">
           <span class="nickname">{{ username }}</span>
-          <span class="badge top" v-show="data.is_top === 1">顶</span>
-          <span class="badge roboot" v-show="data.is_robot === 1">助</span>
-          <span class="badge group" v-show="data.talk_mode === 2">群</span>
+          <span class="badge top" v-show="data.isTop === 1">顶</span>
+          <span class="badge roboot" v-show="data.isRobot === 1">助</span>
+          <span class="badge group" v-show="data.talkMode === 2">群</span>
         </div>
-        <div class="datetime"><Xtime :time="data.updated_at" /></div>
+        <div class="datetime"><Xtime :time="data.updatedAt" /></div>
       </div>
 
       <div class="content">
         <div class="text">
-          <template v-if="!active && data.draft_text">
+          <template v-if="!active && data.draftText">
             <span class="draft">[草稿]</span>
-            <span class="detail" v-html="data.draft_text" />
+            <span class="detail" v-html="data.draftText" />
           </template>
           <template v-else>
-            <span class="detail" v-html="data.msg_text" />
+            <span class="detail" v-html="data.msgText" />
           </template>
         </div>
 
         <div class="tip">
-          <div v-if="data.is_disturb === 1" class="disturb">
+          <div v-if="data.isDisturb === 1" class="disturb">
             <n-icon :component="CloseRemind" />
           </div>
 
-          <div v-else class="unread" v-show="data.unread_num">
+          <div v-else class="unread" v-show="data.unreadNum">
             <span class="badge">
-              {{ data.unread_num > 99 ? '99+' : data.unread_num }}
+              {{ data.unreadNum > 99 ? '99+' : data.unreadNum }}
             </span>
           </div>
         </div>

@@ -25,7 +25,7 @@ const rules = {
     trigger: ['blur', 'input'],
     message: '密码不能为空！'
   },
-  email_code: {
+  emailCode: {
     required: true,
     trigger: ['blur', 'input'],
     message: '验证码不能为空！'
@@ -36,7 +36,7 @@ const loading = ref(false)
 const model = reactive({
   username: '',
   password: '',
-  email_code: ''
+  emailCode: ''
 })
 
 const onRegister = async () => {
@@ -44,7 +44,7 @@ const onRegister = async () => {
   sync(async () => {
     const data = await fetchAuthRegister({
       email: model.username,
-      emailCode: model.email_code,
+      emailCode: model.emailCode,
       ...buildImAuthRequest(model.password)
     } as any)
 
@@ -93,10 +93,10 @@ const onSendEmail = async () => {
           />
         </n-form-item>
 
-        <n-form-item path="email_code" :show-label="false">
+        <n-form-item path="emailCode" :show-label="false">
           <n-input
             placeholder="邮箱验证码"
-            v-model:value="model.email_code"
+            v-model:value="model.emailCode"
             :maxlength="6"
             @keydown.enter="onValidate"
           />

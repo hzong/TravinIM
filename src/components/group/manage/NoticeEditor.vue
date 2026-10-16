@@ -53,10 +53,10 @@ const onMaskClick = () => {
 const onSubmit = async () => {
   const params = {
     notice_id: props.id,
-    group_id: props.groupId,
+    groupId: props.groupId,
     title: model.title,
     content: model.content,
-    is_top: 1,
+    isTop: 1,
     is_confirm: 1
   }
 

@@ -35,7 +35,7 @@ export function useMultiSelect() {
    * @returns {boolean}
    */
   function isSelected(item: IChatItem): boolean {
-    return selectedItems.value.some((value) => value === item.msg_id)
+    return selectedItems.value.some((value) => value === item.msgId)
   }
 
   function enable(value: boolean): void {

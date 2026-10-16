@@ -32,15 +32,15 @@ export const components = {
       <file-message
         filename={extra?.name as string}
         filesize={extra?.size as number}
-        msg-id={message.msg_id}
+        msg-id={message.msgId}
       />
     )
   },
   [chat.ChatMsgTypeForward]: (extra: any) => {
     return (
       <forward-message
-        count={extra?.msg_ids.length as number}
-        msg-ids={extra?.msg_ids as string[]}
+        count={extra?.msgIds.length as number}
+        msg-ids={extra?.msgIds as string[]}
         talk-mode={extra?.talk_type as number}
         items={
           extra.records.map((item: any) => {
@@ -93,7 +93,7 @@ export const components = {
           replacePlaceholders(tpl, {
             '{0}': new Member(extra?.owner_name, extra?.owner_id),
             '{1}': extra?.members?.map((item: any) => {
-              return new Member(item.nickname, item.user_id)
+              return new Member(item.nickname, item.userId)
             })
           }) as string
         }
@@ -108,7 +108,7 @@ export const components = {
           replacePlaceholders(tpl, {
             '{0}': new Member(extra?.owner_name, extra?.owner_id),
             '{1}': extra?.members?.map((item: any) => {
-              return new Member(item.nickname, item.user_id)
+              return new Member(item.nickname, item.userId)
             })
           }) as string
         }
@@ -135,7 +135,7 @@ export const components = {
           replacePlaceholders(tpl, {
             '{0}': new Member(extra?.owner_name, extra?.owner_id),
             '{1}': extra?.members?.map((item: any) => {
-              return new Member(item.nickname, item.user_id)
+              return new Member(item.nickname, item.userId)
             })
           }) as string
         }
@@ -174,7 +174,7 @@ export const components = {
           replacePlaceholders(tpl, {
             '{0}': new Member(extra?.owner_name, extra?.owner_id),
             '{1}': extra?.members?.map((item: any) => {
-              return new Member(item.nickname, item.user_id)
+              return new Member(item.nickname, item.userId)
             })
           }) as string
         }
@@ -189,7 +189,7 @@ export const components = {
           replacePlaceholders(tpl, {
             '{0}': new Member(extra?.owner_name, extra?.owner_id),
             '{1}': extra?.members?.map((item: any) => {
-              return new Member(item.nickname, item.user_id)
+              return new Member(item.nickname, item.userId)
             })
           }) as string
         }

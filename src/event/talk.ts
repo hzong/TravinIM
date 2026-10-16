@@ -8,7 +8,7 @@ import { isElectronMode } from '@/utils/electron'
 import { formatTalkItem, playMusic } from '@/utils/talk'
 import { nextTick } from 'vue'
 import ws from '@/connect'
-import { myUserNo } from '@/utils/im-user-resolve'
+import { myUserNo, rememberUserNo, resolveUserIdByUserNo } from '@/utils/im-user-resolve'
 import Base from './base'
 
 /**
@@ -23,51 +23,54 @@ class Talk extends Base {
   /**
    * 接收者ID
    */
-  to_from_id: number = 0
+  toId: number = 0
 
   /**
    * 发送者ID
    */
-  from_id: number = 0
+  fromId: number = 0
 
   /**
    * 聊天类型[1:私聊;2:群聊;]
    */
-  talk_mode: number = 0
+  talkMode: number = 0
+
+  fromUserNo = ''
 
   /**
-   * 初始化构造方法
-   *
-   * @param {Object} resource Socket消息
+   * MQTT im.message。payload.fromId 是 userNo，这里只在匹配本地会话时换成数字 id。
    */
-  constructor(data: any) {
+  constructor(envelope: any) {
     super()
-
-    const { to_from_id, from_id, talk_mode, body } = data
-
-    Object.assign(this, { from_id, to_from_id, talk_mode, body })
-
-    // Travin v1.4：extra/quote 已是对象；旧版字符串仍兼容
-    if (typeof this.body.extra === 'string') {
-      try {
-        this.body.extra = JSON.parse(this.body.extra)
-      } catch {
-        this.body.extra = {}
-      }
+    const payload = envelope?.payload ?? {}
+    this.talkMode = Number(payload.talkMode) || 0
+    this.fromUserNo = payload.fromId == null ? '' : String(payload.fromId)
+    const toRaw = payload.toId == null ? '' : String(payload.toId)
+    if (this.talkMode === 2) {
+      this.toId = Number(toRaw) || 0
+      this.fromId = resolveUserIdByUserNo(this.fromUserNo)
+    } else if (this.fromUserNo && this.fromUserNo === myUserNo()) {
+      this.fromId = this.getAccountId()
+      this.toId = resolveUserIdByUserNo(toRaw)
     } else {
-      this.body.extra = this.body.extra ?? {}
-    }
-
-    if (this.body.quote == null) {
-      this.body.quote = {}
-    } else if (typeof this.body.quote === 'string') {
-      try {
-        this.body.quote = JSON.parse(this.body.quote)
-      } catch {
-        this.body.quote = {}
+      this.fromId = resolveUserIdByUserNo(this.fromUserNo)
+      if (this.fromUserNo && this.fromId) {
+        rememberUserNo(this.fromUserNo, this.fromId)
       }
+      this.toId = this.fromId
     }
-
+    this.body = {
+      msgId: payload.msgId || envelope?.msgId,
+      msgType: Number(payload.msgType) || 0,
+      fromId: this.fromId,
+      nickname: payload.nickname,
+      avatar: payload.avatar,
+      extra: parseJson(payload.extra, {}),
+      quote: payload.quote == null ? {} : parseJson(payload.quote, {}),
+      sequence: payload.sequence,
+      sendTime: payload.sendTime,
+      isRevoked: Number(payload.isRevoked) || 0
+    }
     this.handle()
   }
 
@@ -77,10 +80,10 @@ class Talk extends Base {
    */
   isCurrSender(): boolean {
     const myNo = myUserNo()
-    if (myNo && (this as any).from_user_no) {
-      return (this as any).from_user_no === myNo
+    if (myNo && (this as any).fromUserNo) {
+      return (this as any).fromUserNo === myNo
     }
-    return this.from_id == this.getAccountId()
+    return this.fromId == this.getAccountId()
   }
 
   /**
@@ -89,7 +92,7 @@ class Talk extends Base {
    * @return String
    */
   getIndexName(): string {
-    return `${this.talk_mode}_${this.to_from_id}`
+    return `${this.talkMode}_${this.toId}`
   }
 
   /**
@@ -97,8 +100,8 @@ class Talk extends Base {
    */
   getTalkText(): string {
     let text = ''
-    if (this.body.msg_type != message.ChatMsgTypeText) {
-      text = message.ChatMsgTypeMapping[this.body.msg_type]
+    if (this.body.msgType != message.ChatMsgTypeText) {
+      text = message.ChatMsgTypeMapping[this.body.msgType]
     } else {
       text = this.body.extra.content.replace(/<img .*?>/g, '')
     }
@@ -125,10 +128,10 @@ class Talk extends Base {
     }
 
     // 判断当前是否正在和好友对话
-    if (this.isTalk(this.talk_mode, this.to_from_id)) {
-      const isCache = msgIdsCache.has(this.body.msg_id)
+    if (this.isTalk(this.talkMode, this.toId)) {
+      const isCache = msgIdsCache.has(this.body.msgId)
       if (isCache) {
-        msgIdsCache.clear(this.body.msg_id)
+        msgIdsCache.clear(this.body.msgId)
       }
 
       this.insertTalkRecord(!isCache)
@@ -143,8 +146,8 @@ class Talk extends Base {
     }
 
     // 非本人发送的消息：回 MQTT ack received（多端同步「已达」）
-    if (!this.isCurrSender() && this.body?.msg_id) {
-      ws.emitMessageReceivedAck(this.body.msg_id)
+    if (!this.isCurrSender() && this.body?.msgId) {
+      ws.emitMessageReceivedAck(this.body.msgId)
     }
   }
 
@@ -154,7 +157,7 @@ class Talk extends Base {
    */
   showMessageNocice() {
     // 是我自己发送的消息不提醒
-    if (this.from_id == this.getAccountId()) return
+    if (this.fromId == this.getAccountId()) return
 
     const notification = new Notification('LumenIM 在线聊天', {
       dir: 'auto',
@@ -172,13 +175,13 @@ class Talk extends Base {
    */
   async addTalkItem() {
     const [err, data] = await fetchApi(fetchTalkSessionCreate, {
-      talk_mode: this.talk_mode,
-      to_from_id: this.to_from_id
+      talkMode: this.talkMode,
+      toId: this.toId
     })
 
     if (err) return
 
-    useTalkStore().addItem({ ...formatTalkItem(data), unread_num: 1 } as ISession)
+    useTalkStore().addItem({ ...formatTalkItem(data), unreadNum: 1 } as ISession)
   }
 
   /**
@@ -188,7 +191,7 @@ class Talk extends Base {
     const record = this.body
 
     // 群成员变化的消息，需要更新群成员列表
-    if ([1102, 1103, 1104].includes(record.msg_type)) {
+    if ([1102, 1103, 1104].includes(record.msgType)) {
       useDialogueStore().updateGroupMembers()
     }
 
@@ -199,19 +202,19 @@ class Talk extends Base {
     useTalkStore().updateMessage(
       {
         index_name: this.getIndexName(),
-        msg_text: this.getTalkText(),
-        updated_at: datetime()
+        msgText: this.getTalkText(),
+        updatedAt: datetime()
       },
       this.isCurrSender()
     )
 
-    if (this.getAccountId() !== this.from_id) {
+    if (this.getAccountId() !== this.fromId) {
       // 这里需要做节流操作
       const session = useTalkStore().findItem(this.getIndexName())
       fetchTalkSessionClearUnreadNum({
-        talk_mode: this.talk_mode,
-        to_from_id: this.to_from_id,
-        session_no: session?.session_no
+        talkMode: this.talkMode,
+        toId: this.toId,
+        sessionNo: session?.sessionNo
       })
     }
 
@@ -247,11 +250,22 @@ class Talk extends Base {
     useTalkStore().updateMessage(
       {
         index_name: this.getIndexName(),
-        msg_text: this.getTalkText(),
-        updated_at: datetime()
+        msgText: this.getTalkText(),
+        updatedAt: datetime()
       },
-      this.isCurrSender() || this.to_from_id == this.getAccountId()
+      this.isCurrSender() || this.toId == this.getAccountId()
     )
+  }
+}
+
+function parseJson(value: unknown, fallback: any) {
+  if (typeof value !== 'string') {
+    return value ?? fallback
+  }
+  try {
+    return JSON.parse(value)
+  } catch {
+    return fallback
   }
 }
 

@@ -29,14 +29,14 @@ const messageSendApi = createApi<TravinMessageSendRequest, TravinMessageSendResp
 
 export interface ServTalkMessageSendRequest {
   type: string
-  quote_id?: string
+  quoteId?: string
   body: any
-  talk_mode: number
-  to_from_id: number
-  session_no?: string
-  msg_id?: string
+  talkMode: number
+  toId: number
+  sessionNo?: string
+  msgId?: string
   /** 重试时必须保持不变 */
-  req_id?: string
+  reqId?: string
 }
 
 interface TravinMessageSendRequest {
@@ -58,17 +58,17 @@ interface TravinMessageSendResponse {
 
 /** 适配旧调用方 snake_case，内部转 Travin 协议 */
 export async function fetchMessageSend(req: ServTalkMessageSendRequest) {
-  const reqId = req.req_id || uuidv4()
-  const msgId = req.msg_id || uuidv4()
+  const reqId = req.reqId || uuidv4()
+  const msgId = req.msgId || uuidv4()
   return messageSendApi({
     reqId,
     msgId,
     type: req.type,
-    talkMode: req.talk_mode,
-    toId: req.to_from_id,
-    sessionNo: req.session_no || '',
+    talkMode: req.talkMode,
+    toId: req.toId,
+    sessionNo: req.sessionNo || '',
     body: req.body,
-    quoteId: req.quote_id || ''
+    quoteId: req.quoteId || ''
   })
 }
 

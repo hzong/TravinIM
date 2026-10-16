@@ -158,8 +158,8 @@ function normalizeOutboxPayload(event: string, payload: any) {
   }
   if (event === 'im.message.keyboard') {
     return {
-      talkMode: payload.talk_mode ?? payload.talkMode ?? 1,
-      toId: payload.to_from_id ?? payload.toId ?? payload.toFromId,
+      talkMode: payload.talkMode ?? payload.talkMode ?? 1,
+      toId: payload.toId ?? payload.toId ?? payload.toId,
       action: payload.action || 'typing'
     }
   }

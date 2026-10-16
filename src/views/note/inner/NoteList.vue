@@ -60,7 +60,7 @@ const onSearchInput = debounce(() => {
         <template v-for="note in items" :key="note.article_id">
           <NoteListItem
             :title="note.title"
-            :datetime="note.updated_at"
+            :datetime="note.updatedAt"
             :classname="note.class_name"
             :active="loadId == note.article_id"
             :is-asterisk="note.is_asterisk == 1"

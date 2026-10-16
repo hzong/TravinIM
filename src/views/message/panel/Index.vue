@@ -43,8 +43,8 @@ const {
 const talkParams = reactive({
   uid: computed(() => userStore.uid),
   indexName: computed(() => dialogueStore.index_name),
-  talkMode: computed(() => dialogueStore.target.talk_mode),
-  toFromId: computed(() => dialogueStore.target.to_from_id),
+  talkMode: computed(() => dialogueStore.target.talkMode),
+  toId: computed(() => dialogueStore.target.toId),
   username: computed(() => dialogueStore.target.username),
   description: computed(() => dialogueStore.target.description),
   keyboard: computed(() => dialogueStore.keyboard),
@@ -63,12 +63,12 @@ function onElementClickUser(key: string, item: any) {
     return (
       talkParams.talkMode == TalkModeEnum.Group &&
       bus.emit(EditorConst.Mention, {
-        id: item.from_id,
+        id: item.fromId,
         value: item.nickname
       })
     )
   } else {
-    toShowUserInfo(item.from_id)
+    toShowUserInfo(item.fromId)
   }
 }
 
@@ -89,7 +89,7 @@ const events = {
     showGroupLaunch.value.groupId = 0
 
     if (talkParams.talkMode === TalkModeEnum.Group) {
-      showGroupLaunch.value.groupId = talkParams.toFromId
+      showGroupLaunch.value.groupId = talkParams.toId
     }
 
     showGroupLaunch.value.isShowGroupLaunch = true
@@ -135,7 +135,7 @@ async function loopGetOnlineStatus() {
   }
 
   const [err, data] = await fetchApi(fetchContactOnlineStatus, {
-    user_id: talkParams.toFromId
+    userId: talkParams.toId
   })
 
   if (!err) {
@@ -220,7 +220,7 @@ onUnmounted(() => {
         :uid="talkParams.uid"
         :index-name="talkParams.indexName"
         :talk-mode="talkParams.talkMode"
-        :to-from-id="talkParams.toFromId"
+        :to-id="talkParams.toId"
         :online="talkParams.online"
         :members="members"
         :aside="chatAside.aside.show"
@@ -232,7 +232,7 @@ onUnmounted(() => {
                 GroupMember,
                 180,
                 {
-                  groupId: talkParams.toFromId,
+                  groupId: talkParams.toId,
                   members: members
                 },
                 {
@@ -260,7 +260,7 @@ onUnmounted(() => {
     <UploadsModal />
   </n-drawer>
 
-  <GroupNoticeDrawer v-model="isShowGroupNoticeAside" :group-id="talkParams.toFromId" />
+  <GroupNoticeDrawer v-model="isShowGroupNoticeAside" :group-id="talkParams.toId" />
 
   <n-drawer
     v-model:show="isShowGroupAside"
@@ -269,7 +269,7 @@ onUnmounted(() => {
     show-mask="transparent"
     to="#drawer-container"
   >
-    <GroupPanel :group-id="talkParams.toFromId" @close="isShowGroupAside = false" />
+    <GroupPanel :group-id="talkParams.toId" @close="isShowGroupAside = false" />
   </n-drawer>
 
   <GroupLaunch

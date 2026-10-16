@@ -19,7 +19,7 @@ const detail = reactive({
 })
 
 const onLoadData = async () => {
-  const [err, data] = await fetchApi(fetchGroupDetail, { group_id: props.groupId })
+  const [err, data] = await fetchApi(fetchGroupDetail, { groupId: props.groupId })
 
   if (err) return
 
@@ -30,7 +30,7 @@ const onLoadData = async () => {
 const onDismiss = async () => {
   const [err] = await fetchApi(
     fetchGroupDismiss,
-    { group_id: props.groupId },
+    { groupId: props.groupId },
     {
       successText: '群聊已解散'
     }
@@ -43,7 +43,7 @@ const onMute = async (value: boolean) => {
   detail.mute_loading = true
 
   const [err] = await fetchApi(fetchGroupMute, {
-    group_id: props.groupId,
+    groupId: props.groupId,
     action: value ? 1 : 2
   })
 
@@ -57,7 +57,7 @@ const onOvert = async (value: boolean) => {
   detail.overt_loading = true
 
   const [err] = await fetchApi(fetchGroupOvert, {
-    group_id: props.groupId,
+    groupId: props.groupId,
     action: value ? 1 : 2
   })
 

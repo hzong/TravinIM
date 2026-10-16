@@ -100,9 +100,9 @@ export const useUploadsStore = defineStore('uploads', {
     sendUploadMessage(item: any) {
       fetchMessageSend({
         type: 'file',
-        talk_mode: item.talk_type,
-        to_from_id: item.receiver_id,
-        session_no: item.session_no,
+        talkMode: item.talk_type,
+        toId: item.receiver_id,
+        sessionNo: item.sessionNo,
         body: { upload_id: item.upload_id }
       })
     }

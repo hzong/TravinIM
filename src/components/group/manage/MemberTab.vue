@@ -22,7 +22,7 @@ const props = defineProps({
 })
 
 interface Item {
-  user_id: number
+  userId: number
   avatar: string
   nickname: string
   gender: number
@@ -57,7 +57,7 @@ const filterSearch = computed(() => {
 
 const isAdmin = computed(() => {
   return items.value.some((item: any) => {
-    return item.user_id == userStore.uid && item.leader == 1
+    return item.userId == userStore.uid && item.leader == 1
   })
 })
 
@@ -73,7 +73,7 @@ const onLoadData = async () => {
   const [err, data] = await fetchApi(
     fetchGroupMemberList,
     {
-      group_id: props.groupId
+      groupId: props.groupId
     },
     {
       loading
@@ -100,8 +100,8 @@ const onDelete = (item: Item) => {
       await fetchApi(
         fetchGroupRemoveMember,
         {
-          group_id: props.groupId,
-          user_ids: [item.user_id]
+          groupId: props.groupId,
+          userIds: [item.userId]
         },
         {
           successText: '删除成功',
@@ -124,8 +124,8 @@ const onBatchDelete = () => {
       await fetchApi(
         fetchGroupRemoveMember,
         {
-          group_id: props.groupId,
-          user_ids: filterCheck.value.map((item: Item) => item.user_id)
+          groupId: props.groupId,
+          userIds: filterCheck.value.map((item: Item) => item.userId)
         },
         {
           successText: '删除成功',
@@ -145,7 +145,7 @@ const onRowClick = (item: Item) => {
       item.is_delete = !item.is_delete
     }
   } else {
-    toShowUserInfo(item.user_id)
+    toShowUserInfo(item.userId)
   }
 }
 
@@ -158,7 +158,7 @@ const onCancelDelete = () => {
 }
 
 const onUserInfo = (item: Item) => {
-  toShowUserInfo(item.user_id)
+  toShowUserInfo(item.userId)
 }
 
 const onAssignAdmin = (item: Item) => {
@@ -177,8 +177,8 @@ const onAssignAdmin = (item: Item) => {
         fetchGroupAssignAdmin,
         {
           action: item.leader === 3 ? 1 : 2,
-          group_id: props.groupId,
-          user_id: item.user_id
+          groupId: props.groupId,
+          userId: item.userId
         },
         {
           successText: '操作成功',
@@ -199,8 +199,8 @@ const onTransfer = (item: Item) => {
       await fetchApi(
         fetchGroupHandover,
         {
-          group_id: props.groupId,
-          user_id: item.user_id
+          groupId: props.groupId,
+          userId: item.userId
         },
         {
           successText: '操作成功',
@@ -228,8 +228,8 @@ const onForbidden = (item: Item) => {
         fetchGroupNoSpeak,
         {
           action: item.is_mute === 1 ? 2 : 1,
-          group_id: props.groupId,
-          user_id: item.user_id
+          groupId: props.groupId,
+          userId: item.userId
         },
         {
           successText: '操作成功',
@@ -339,7 +339,7 @@ onMounted(() => {
     </main>
 
     <main v-else class="el-main main me-scrollbar me-scrollbar-thumb">
-      <div class="member-item" v-for="item in filterSearch" :key="item.user_id">
+      <div class="member-item" v-for="item in filterSearch" :key="item.userId">
         <div class="tool flex-center" v-show="batchDelete">
           <n-checkbox :disabled="item.leader === 2" size="small" :checked="item.is_delete" />
         </div>

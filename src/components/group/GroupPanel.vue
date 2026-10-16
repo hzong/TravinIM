@@ -47,13 +47,13 @@ const members = ref<any[]>([])
 
 const isLeader = computed(() => {
   return members.value.some((item: any) => {
-    return item.user_id == userStore.uid && item.leader == 2
+    return item.userId == userStore.uid && item.leader == 2
   })
 })
 
 const isAdmin = computed(() => {
   return members.value.some((item: any) => {
-    return item.user_id == userStore.uid && item.leader == 1
+    return item.userId == userStore.uid && item.leader == 1
   })
 })
 
@@ -64,7 +64,7 @@ const onShowManage = (vallue: any) => {
 const onGroupCallBack = () => {}
 
 const onToInfo = (item: any) => {
-  toShowUserInfo(item.user_id)
+  toShowUserInfo(item.userId)
 }
 
 /**
@@ -73,7 +73,7 @@ const onToInfo = (item: any) => {
 async function loadDetail() {
   const [err, data] = await fetchApi(
     fetchGroupDetail,
-    { group_id: props.groupId },
+    { groupId: props.groupId },
     { error: false, loading }
   )
 
@@ -93,7 +93,7 @@ async function loadDetail() {
 async function loadMembers() {
   const [err, data] = await fetchApi(
     fetchGroupMemberList,
-    { group_id: props.groupId },
+    { groupId: props.groupId },
     { error: false }
   )
 
@@ -109,7 +109,7 @@ const onClose = () => {
 const onSignOut = async () => {
   await fetchApi(
     fetchGroupSecede,
-    { group_id: props.groupId },
+    { groupId: props.groupId },
     {
       successText: '已退出群聊',
       onSuccess: onClose
@@ -121,7 +121,7 @@ const onChangeRemark = async () => {
   const [err] = await fetchApi(
     fetchGroupRemarkUpdate,
     {
-      group_id: props.groupId,
+      groupId: props.groupId,
       remark: remark.value
     },
     {

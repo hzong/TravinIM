@@ -14,10 +14,16 @@ export function useTalkRecord() {
   const loadChatRecord = async (): Promise<boolean> => {
     const { target: talk } = dialogueStore
 
-    const request: Record<string, unknown> = {
-      talk_mode: talk.talk_mode,
-      to_from_id: talk.to_from_id,
-      session_no: talk.session_no,
+    const request: {
+      talkMode: number
+      toId: number
+      sessionNo?: string
+      limit: number
+      cursor?: number
+    } = {
+      talkMode: talk.talkMode,
+      toId: talk.toId,
+      sessionNo: talk.sessionNo,
       limit: 30
     }
     if (cursor > 0) {
@@ -28,9 +34,9 @@ export function useTalkRecord() {
       console.log('Loading talk records with request:', request)
       const data = await fetchMessageRecords(request)
 
-      if (request.talk_mode !== talk.talk_mode || request.to_from_id !== talk.to_from_id) {
-        console.error('Talk mode or to_from_id changed')
-        throw new Error('Talk mode or to_from_id changed')
+      if (request.talkMode !== talk.talkMode || request.toId !== talk.toId) {
+        console.error('Talk mode or toId changed')
+        throw new Error('Talk mode or toId changed')
       }
 
       if (!request.cursor) {

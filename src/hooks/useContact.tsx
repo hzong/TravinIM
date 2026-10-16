@@ -5,7 +5,7 @@ import { h } from 'vue'
 import { useInject } from './useInject.ts'
 
 interface IContactParams {
-  user_id: number
+  userId: number
   nickname?: string
   remark: string
 }
@@ -33,7 +33,7 @@ export function useContact() {
       onPositiveClick: async () => {
         const options = { successText: '删除联系人成功' }
 
-        const [err] = await fetchApi(fetchContactDelete, { user_id: item.user_id }, options)
+        const [err] = await fetchApi(fetchContactDelete, { userId: item.userId }, options)
         if (err) return false
 
         if (fn) fn()
@@ -47,7 +47,7 @@ export function useContact() {
       const [err] = await fetchApi(
         fetchContactEditRemark,
         {
-          user_id: item.user_id,
+          userId: item.userId,
           remark: remark
         },
         {
@@ -59,7 +59,7 @@ export function useContact() {
 
       if (fn) {
         fn({
-          user_id: item.user_id,
+          userId: item.userId,
           remark: remark
         })
       }

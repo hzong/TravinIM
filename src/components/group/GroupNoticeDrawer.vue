@@ -22,18 +22,18 @@ const editorContent = ref('')
 const themeMode = computed(() => settingsStore.currentThemeMode as Themes)
 
 const detail = ref({
-  updated_at: '',
+  updatedAt: '',
   content: '',
   modify_user_name: ''
 })
 
 async function loadDetail() {
-  const [err, data] = await fetchApi(fetchGroupDetail, { group_id: props.groupId })
+  const [err, data] = await fetchApi(fetchGroupDetail, { groupId: props.groupId })
 
   if (err) return
 
   detail.value = {
-    updated_at: data?.notice?.updated_at || '',
+    updatedAt: data?.notice?.updatedAt || '',
     content: data.notice?.content || '',
     modify_user_name: data.notice?.modify_user_name || ''
   }
@@ -57,7 +57,7 @@ const onSave = async () => {
   }
 
   const [err] = await fetchApi(fetchGroupNoticeEdit, {
-    group_id: props.groupId,
+    groupId: props.groupId,
     content: editorContent.value
   })
 

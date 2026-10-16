@@ -46,7 +46,7 @@ const onLoadContact = async () => {
 
   items.value = (data?.items || []).map((item: any) => {
     return {
-      id: item.user_id,
+      id: item.userId,
       avatar: item.avatar,
       type: 1,
       name: item.nickname,
@@ -66,7 +66,7 @@ const onLoadGroup = async () => {
 
   const list = data.items.map((item: any) => {
     return {
-      id: item.group_id,
+      id: item.groupId,
       avatar: item.avatar,
       type: 2,
       name: item.group_name,

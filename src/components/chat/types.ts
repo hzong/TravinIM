@@ -25,7 +25,7 @@ export enum AlignEnum {
 
 export interface IMessage {
   // 消息ID【唯一性】
-  msg_id: string
+  msgId: string
   // 消息发送时间
   time: string
   // 发送者角色
@@ -41,7 +41,7 @@ export interface IMessage {
   // 是否引用消息
   quote?: {
     // 原消息ID
-    quote_id: string
+    quoteId: string
     // 消息内容
     content: string
   }
@@ -53,7 +53,7 @@ export interface IMessage {
 
 export interface IChatItem {
   // 消息ID【唯一性】
-  msg_id: string
+  msgId: string
   [key: string]: any
 }
 

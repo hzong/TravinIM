@@ -31,7 +31,7 @@ export function useSessionMenu() {
   const onContextMenu = (e: any, item: ISession) => {
     const options: IDropdownOption[] = []
 
-    if (item.talk_mode === 1 && item.is_robot !== 1) {
+    if (item.talkMode === 1 && item.isRobot !== 1) {
       options.push({
         icon: renderIcon(IdCard),
         label: '好友信息',
@@ -46,14 +46,14 @@ export function useSessionMenu() {
     }
 
     options.push({
-      icon: renderIcon(item.is_top === 1 ? ArrowDown : ArrowUp),
-      label: item.is_top === 1 ? '取消置顶' : '会话置顶',
+      icon: renderIcon(item.isTop === 1 ? ArrowDown : ArrowUp),
+      label: item.isTop === 1 ? '取消置顶' : '会话置顶',
       key: 'top'
     })
 
     options.push({
-      icon: renderIcon(item.is_disturb === 1 ? CloseRemind : Remind),
-      label: item.is_disturb === 1 ? '关闭免打扰' : '开启免打扰',
+      icon: renderIcon(item.isDisturb === 1 ? CloseRemind : Remind),
+      label: item.isDisturb === 1 ? '关闭免打扰' : '开启免打扰',
       key: 'disturb'
     })
 
@@ -61,7 +61,7 @@ export function useSessionMenu() {
       type: 'divider'
     })
 
-    if (item.talk_mode == 1 && item.is_robot !== 1) {
+    if (item.talkMode == 1 && item.isRobot !== 1) {
       options.push({
         icon: renderIcon(Delete),
         label: '删除好友',
@@ -69,7 +69,7 @@ export function useSessionMenu() {
       })
     }
 
-    if (item.talk_mode === 2) {
+    if (item.talkMode === 2) {
       options.push({
         icon: renderIcon(Delete),
         label: '退出群聊',
@@ -93,15 +93,15 @@ export function useSessionMenu() {
   }
 
   const onUserInfo = (item: ISession) => {
-    toShowUserInfo(item.to_from_id)
+    toShowUserInfo(item.toId)
   }
 
   // 移除会话
   const onRemoveTalk = async (item: ISession) => {
     const [err] = await fetchApi(fetchTalkSessionDelete, {
-      talk_mode: item.talk_mode,
-      to_from_id: item.to_from_id,
-      session_no: item.session_no
+      talkMode: item.talkMode,
+      toId: item.toId,
+      sessionNo: item.sessionNo
     })
 
     if (!err) {
@@ -112,37 +112,37 @@ export function useSessionMenu() {
   // 设置消息免打扰
   const onSetDisturb = async (item: ISession) => {
     const [err] = await fetchApi(fetchTalkSessionDisturb, {
-      talk_mode: item.talk_mode,
-      to_from_id: item.to_from_id,
-      session_no: item.session_no,
-      action: item.is_disturb === 2 ? 1 : 2
+      talkMode: item.talkMode,
+      toId: item.toId,
+      sessionNo: item.sessionNo,
+      action: item.isDisturb === 1 ? 0 : 1
     })
 
     if (!err) {
       talkStore.updateItem({
         index_name: item.index_name,
-        is_disturb: item.is_disturb === 1 ? 2 : 1
+        isDisturb: item.isDisturb === 1 ? 0 : 1
       })
     }
   }
 
   // 置顶会话
   const onToTopTalk = async (item: ISession) => {
-    if (item.is_top === 2 && talkStore.topItems.length >= 18) {
+    if (item.isTop !== 1 && talkStore.topItems.length >= 18) {
       return message.warning('置顶最多不能超过18个会话')
     }
 
     const [err] = await fetchApi(fetchTalkSessionTop, {
-      talk_mode: item.talk_mode,
-      to_from_id: item.to_from_id,
-      session_no: item.session_no,
-      action: item.is_top === 2 ? 1 : 2
+      talkMode: item.talkMode,
+      toId: item.toId,
+      sessionNo: item.sessionNo,
+      action: item.isTop === 1 ? 0 : 1
     })
 
     if (!err) {
       talkStore.updateItem({
         index_name: item.index_name,
-        is_top: item.is_top === 1 ? 2 : 1
+        isTop: item.isTop === 1 ? 0 : 1
       })
     }
   }
@@ -151,7 +151,7 @@ export function useSessionMenu() {
   const onDeleteContact = (item: ISession) => {
     onDeleteContact2(
       {
-        user_id: item.to_from_id,
+        userId: item.toId,
         nickname: item.name,
         remark: item.remark
       },
@@ -165,7 +165,7 @@ export function useSessionMenu() {
   const onSignOutGroup = (item: ISession) => {
     onSignOutGroup2(
       {
-        group_id: item.to_from_id,
+        groupId: item.toId,
         name: item.name
       },
       () => {
@@ -177,7 +177,7 @@ export function useSessionMenu() {
   const onChangeRemark = (item: ISession) => {
     onChangeContactRemark(
       {
-        user_id: item.to_from_id,
+        userId: item.toId,
         remark: item.remark
       },
       ({ remark }) => {

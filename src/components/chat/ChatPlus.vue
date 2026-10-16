@@ -177,8 +177,8 @@ defineExpose({
 
       <ChatItem
         v-for="item in items"
-        :key="item.msg_id"
-        :data-index="item.msg_id"
+        :key="item.msgId"
+        :data-index="item.msgId"
         :align="alignMode"
         :show-checkbox="multiSelect.isEnable()"
         :show-avatar="showAvatar"
@@ -186,7 +186,7 @@ defineExpose({
         :raw="item"
         :is-selected="multiSelect.isSelected(item)"
         @element-event="onElementEvent"
-        @selected-element="setMultiSelect([item.msg_id])"
+        @selected-element="setMultiSelect([item.msgId])"
         @click-avatar="onClickAvatar"
         @click-name="onClickName"
         :on-context-menu="onContextMenu"

@@ -5,7 +5,7 @@ defineProps<{
 </script>
 
 <template>
-  <div class="immsg-unknown">未知消息类型 [msg_type={{ msgType }}]</div>
+  <div class="immsg-unknown">未知消息类型 [msgType={{ msgType }}]</div>
 </template>
 
 <style lang="less" scoped>

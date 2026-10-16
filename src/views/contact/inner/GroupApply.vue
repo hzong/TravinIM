@@ -8,8 +8,8 @@ import { formatTime } from '@/utils/datetime'
 
 interface Item {
   id: number
-  user_id: number
-  group_id: number
+  userId: number
+  groupId: number
   avatar: string
   nickname: string
   remark: string
@@ -31,7 +31,7 @@ const onLoadData = async () => {
 }
 
 const onInfo = (item: Item) => {
-  toShowUserInfo(item.user_id)
+  toShowUserInfo(item.userId)
 }
 
 const onAgree = async (item: Item) => {

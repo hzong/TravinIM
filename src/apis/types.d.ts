@@ -98,7 +98,7 @@ export interface ArticleDetailResponse {
   md_content: string
   is_asterisk: number
   created_at: string
-  updated_at: string
+  updatedAt: string
   /** 标签列表 */
   tag_ids: ArticleDetailResponse_Tag[]
   /** 附件列表 */
@@ -164,7 +164,7 @@ export interface ArticleListResponse_Item {
   is_asterisk: number
   status: number
   created_at: string
-  updated_at: string
+  updatedAt: string
   abstract: string
 }
 
@@ -209,12 +209,9 @@ export interface ArticleTagsRequest {
 export interface ArticleTagsResponse {}
 
 export interface AuthForgetRequest {
-  /** 手机号 */
-  mobile: string
-  /** 登录密码 */
+  email: string
   password: string
-  /** 短信验证码 */
-  sms_code: string
+  emailCode: string
 }
 
 export interface AuthForgetResponse {}
@@ -324,7 +321,7 @@ export interface ContactApplyAcceptRequest {
 export interface ContactApplyAcceptResponse {}
 
 export interface ContactApplyCreateRequest {
-  user_id?: number
+  userId?: number
   remark?: string
 }
 
@@ -345,7 +342,7 @@ export interface ContactApplyListResponse {
 
 export interface ContactApplyListResponse_Item {
   id: number
-  user_id: number
+  userId: number
   friend_id: number
   remark: string
   nickname: string
@@ -360,24 +357,24 @@ export interface ContactApplyUnreadNumResponse {
 }
 
 export interface ContactChangeGroupRequest {
-  user_id: number
-  group_id?: number
+  userId: number
+  groupId?: number
 }
 
 export interface ContactChangeGroupResponse {}
 
 export interface ContactDeleteRequest {
-  user_id: number
+  userId: number
 }
 
 export interface ContactDeleteResponse {}
 
 export interface ContactDetailRequest {
-  user_id: number
+  userId: number
 }
 
 export interface ContactDetailResponse {
-  user_id: number
+  userId: number
   mobile: string
   nickname: string
   avatar: string
@@ -385,13 +382,13 @@ export interface ContactDetailResponse {
   motto: string
   email: string
   relation: number
-  contact_remark: string
-  contact_group_id: number
-  online_status: string
+  contactRemark: string
+  contactGroupId: number
+  onlineStatus: string
 }
 
 export interface ContactEditRemarkRequest {
-  user_id: number
+  userId: number
   remark?: string
 }
 
@@ -435,7 +432,7 @@ export interface ContactListResponse {
 
 export interface ContactListResponse_Item {
   /** 用户ID */
-  user_id: number
+  userId: number
   /** 昵称 */
   nickname: string
   /** 性别[0:未知;1:男;2:女;] */
@@ -447,11 +444,11 @@ export interface ContactListResponse_Item {
   /** 备注 */
   remark: string
   /** 联系人分组ID */
-  group_id: number
+  groupId: number
 }
 
 export interface ContactOnlineStatusRequest {
-  user_id: number
+  userId: number
 }
 
 export interface ContactOnlineStatusResponse {
@@ -464,7 +461,7 @@ export interface ContactSearchRequest {
 }
 
 export interface ContactSearchResponse {
-  user_id: number
+  userId: number
   mobile: string
   nickname: string
   avatar: string
@@ -499,7 +496,7 @@ export interface EmoticonListResponse {
 }
 
 export interface GetInviteFriendsRequest {
-  group_id?: number
+  groupId?: number
 }
 
 export interface GetInviteFriendsResponse {
@@ -507,7 +504,7 @@ export interface GetInviteFriendsResponse {
 }
 
 export interface GetInviteFriendsResponse_Item {
-  user_id: number
+  userId: number
   nickname: string
   avatar: string
   gender: number
@@ -533,8 +530,8 @@ export interface GroupApplyAllResponse {
 
 export interface GroupApplyAllResponse_Item {
   id: number
-  user_id: number
-  group_id: number
+  userId: number
+  groupId: number
   group_name: string
   remark: string
   avatar: string
@@ -543,7 +540,7 @@ export interface GroupApplyAllResponse_Item {
 }
 
 export interface GroupApplyCreateRequest {
-  group_id?: number
+  groupId?: number
   remark?: string
 }
 
@@ -563,7 +560,7 @@ export interface GroupApplyDeleteRequest {
 export interface GroupApplyDeleteResponse {}
 
 export interface GroupApplyListRequest {
-  group_id?: number
+  groupId?: number
 }
 
 export interface GroupApplyListResponse {
@@ -572,8 +569,8 @@ export interface GroupApplyListResponse {
 
 export interface GroupApplyListResponse_Item {
   id: number
-  user_id: number
-  group_id: number
+  userId: number
+  groupId: number
   remark: string
   avatar: string
   nickname: string
@@ -587,8 +584,8 @@ export interface GroupApplyUnreadNumResponse {
 }
 
 export interface GroupAssignAdminRequest {
-  group_id?: number
-  user_id?: number
+  groupId?: number
+  userId?: number
   action?: number
 }
 
@@ -596,25 +593,25 @@ export interface GroupAssignAdminResponse {}
 
 export interface GroupCreateRequest {
   name?: string
-  user_ids?: number[]
+  userIds?: number[]
 }
 
 export interface GroupCreateResponse {
-  group_id: number
+  groupId: number
 }
 
 export interface GroupDetailRequest {
-  group_id?: number
+  groupId?: number
 }
 
 export interface GroupDetailResponse {
-  group_id: number
+  groupId: number
   group_name: string
   profile: string
   avatar: string
   created_at: string
   is_manager: boolean
-  is_disturb: number
+  isDisturb: number
   visit_card: string
   is_mute: number
   is_overt: number
@@ -624,26 +621,26 @@ export interface GroupDetailResponse {
 export interface GroupDetailResponse_Notice {
   content?: string
   created_at?: string
-  updated_at?: string
+  updatedAt?: string
   modify_user_name?: string
 }
 
 export interface GroupDismissRequest {
-  group_id?: number
+  groupId?: number
 }
 
 export interface GroupDismissResponse {}
 
 export interface GroupHandoverRequest {
-  group_id?: number
-  user_id?: number
+  groupId?: number
+  userId?: number
 }
 
 export interface GroupHandoverResponse {}
 
 export interface GroupInviteRequest {
-  group_id?: number
-  user_ids?: number[]
+  groupId?: number
+  userIds?: number[]
 }
 
 export interface GroupInviteResponse {}
@@ -655,7 +652,7 @@ export interface GroupListResponse {
 }
 
 export interface GroupListResponse_Item {
-  group_id: number
+  groupId: number
   group_name: string
   avatar: string
   profile: string
@@ -664,7 +661,7 @@ export interface GroupListResponse_Item {
 }
 
 export interface GroupMemberListRequest {
-  group_id?: number
+  groupId?: number
 }
 
 export interface GroupMemberListResponse {
@@ -672,7 +669,7 @@ export interface GroupMemberListResponse {
 }
 
 export interface GroupMemberListResponse_Item {
-  user_id: number
+  userId: number
   nickname: string
   avatar: string
   gender: number
@@ -683,7 +680,7 @@ export interface GroupMemberListResponse_Item {
 }
 
 export interface GroupMuteRequest {
-  group_id?: number
+  groupId?: number
   /** 操作方式  1:开启全员禁言  2:解除全员禁言 */
   action?: number
 }
@@ -691,15 +688,15 @@ export interface GroupMuteRequest {
 export interface GroupMuteResponse {}
 
 export interface GroupNoSpeakRequest {
-  group_id?: number
-  user_id?: number
+  groupId?: number
+  userId?: number
   action?: number
 }
 
 export interface GroupNoSpeakResponse {}
 
 export interface GroupNoticeEditRequest {
-  group_id?: number
+  groupId?: number
   content?: string
 }
 
@@ -716,7 +713,7 @@ export interface GroupOvertListResponse {
 }
 
 export interface GroupOvertListResponse_Item {
-  group_id: number
+  groupId: number
   type: number
   name: string
   avatar: string
@@ -728,7 +725,7 @@ export interface GroupOvertListResponse_Item {
 }
 
 export interface GroupOvertRequest {
-  group_id?: number
+  groupId?: number
   /** 操作方式 1:关闭  2:开启 */
   action?: number
 }
@@ -736,27 +733,27 @@ export interface GroupOvertRequest {
 export interface GroupOvertResponse {}
 
 export interface GroupRemarkUpdateRequest {
-  group_id?: number
+  groupId?: number
   remark?: string
 }
 
 export interface GroupRemarkUpdateResponse {}
 
 export interface GroupRemoveMemberRequest {
-  group_id?: number
-  user_ids?: number[]
+  groupId?: number
+  userIds?: number[]
 }
 
 export interface GroupRemoveMemberResponse {}
 
 export interface GroupSecedeRequest {
-  group_id?: number
+  groupId?: number
 }
 
 export interface GroupSecedeResponse {}
 
 export interface GroupSettingRequest {
-  group_id?: number
+  groupId?: number
   group_name?: string
   avatar?: string
   profile?: string
@@ -765,7 +762,7 @@ export interface GroupSettingRequest {
 export interface GroupSettingResponse {}
 
 export interface GroupVoteCreateRequest {
-  group_id?: number
+  groupId?: number
   title?: string
   mode?: number
   is_anonymous?: number
@@ -796,7 +793,7 @@ export interface GroupVoteDetailResponse_AnswerOption {
 }
 
 export interface GroupVoteDetailResponse_AnsweredUser {
-  user_id: number
+  userId: number
   nickname: string
   options: string[]
   answer_time: string
@@ -810,24 +807,24 @@ export interface GroupVoteSubmitRequest {
 export interface GroupVoteSubmitResponse {}
 
 export interface MessageDeleteRequest {
-  talk_mode: number
-  to_from_id: number
-  msg_ids: string[]
+  talkMode: number
+  toId: number
+  msgIds: string[]
 }
 
 export interface MessageDeleteResponse {}
 
 export interface MessageForwardRecordsRequest {
-  talk_mode?: number
-  msg_ids?: string[]
+  talkMode?: number
+  msgIds?: string[]
 }
 
 export interface MessageHistoryRecordsRequest {
-  talk_mode: number
-  to_from_id: number
+  talkMode: number
+  toId: number
   cursor: number
   limit: number
-  msg_type: number
+  msgType: number
 }
 
 export interface MessageHistoryRecordsResponse {
@@ -836,14 +833,14 @@ export interface MessageHistoryRecordsResponse {
 }
 
 export interface MessageRecord {
-  msg_id: string
+  msgId: string
   sequence: number
-  msg_type: number
-  from_id: number
+  msgType: number
+  fromId: number
   nickname: string
   avatar: string
-  is_revoked: number
-  send_time: string
+  isRevoked: number
+  sendTime: string
   extra: string
   quote: string
 }
@@ -853,9 +850,10 @@ export interface MessageRecordsClearResponse {
 }
 
 export interface MessageRecordsRequest {
-  talk_mode: number
-  to_from_id: number
-  cursor: number
+  talkMode: number
+  toId: number
+  sessionNo?: string
+  cursor?: number
   limit: number
 }
 
@@ -865,9 +863,9 @@ export interface MessageRecordsResponse {
 }
 
 export interface MessageRevokeRequest {
-  talk_mode: number
-  to_from_id: number
-  msg_id: string
+  talkMode: number
+  toId: number
+  msgId: string
 }
 
 export interface MessageRevokeResponse {}
@@ -899,7 +897,7 @@ export interface OrganizePersonnelListResponse_Dept {
 }
 
 export interface OrganizePersonnelListResponse_Item {
-  user_id: number
+  userId: number
   nickname: string
   gender: number
   position_items: OrganizePersonnelListResponse_Position[]
@@ -929,45 +927,46 @@ export interface Status {
 }
 
 export interface TalkSessionClearUnreadNumRequest {
-  talk_mode?: number
-  to_from_id?: number
+  talkMode?: number
+  toId?: number
+  sessionNo?: string
 }
 
 export interface TalkSessionClearUnreadNumResponse {}
 
 export interface TalkSessionCreateRequest {
   /** 1:私聊 2:群聊 */
-  talk_mode?: number
+  talkMode?: number
   /** 对方ID */
-  to_from_id?: number
+  toId?: number
 }
 
 export interface TalkSessionCreateResponse {
   id: number
-  talk_mode: number
-  to_from_id: number
-  is_top: number
-  is_disturb: number
+  talkMode: number
+  toId: number
+  isTop: number
+  isDisturb: number
   is_online: number
-  is_robot: number
+  isRobot: number
   name: string
   avatar: string
   remark: string
-  unread_num: number
-  msg_text: string
-  updated_at: string
+  unreadNum: number
+  msgText: string
+  updatedAt: string
 }
 
 export interface TalkSessionDeleteRequest {
-  talk_mode?: number
-  to_from_id?: number
+  talkMode?: number
+  toId?: number
 }
 
 export interface TalkSessionDeleteResponse {}
 
 export interface TalkSessionDisturbRequest {
-  talk_mode?: number
-  to_from_id?: number
+  talkMode?: number
+  toId?: number
   action?: number
 }
 
@@ -975,17 +974,17 @@ export interface TalkSessionDisturbResponse {}
 
 export interface TalkSessionItem {
   id: number
-  talk_mode: number
-  to_from_id: number
-  is_top: number
-  is_disturb: number
-  is_robot: number
+  talkMode: number
+  toId: number
+  isTop: number
+  isDisturb: number
+  isRobot: number
   name: string
   avatar: string
   remark: string
-  unread_num: number
-  msg_text: string
-  updated_at: string
+  unreadNum: number
+  msgText: string
+  updatedAt: string
 }
 
 export interface TalkSessionListRequest {}
@@ -995,8 +994,8 @@ export interface TalkSessionListResponse {
 }
 
 export interface TalkSessionTopRequest {
-  talk_mode?: number
-  to_from_id?: number
+  talkMode?: number
+  toId?: number
   action?: number
 }
 
@@ -1051,7 +1050,7 @@ export interface UserPasswordUpdateResponse {}
 export interface UserSettingRequest {}
 
 export interface UserSettingResponse {
-  user_info: UserSettingResponse_UserInfo
+  userInfo: UserSettingResponse_UserInfo
   setting: UserSettingResponse_ConfigInfo
 }
 
@@ -1064,7 +1063,9 @@ export interface UserSettingResponse_ConfigInfo {
 }
 
 export interface UserSettingResponse_UserInfo {
+  id?: number
   uid: number
+  userNo?: string
   nickname: string
   avatar: string
   motto: string

@@ -61,7 +61,7 @@ const renderLabel: TransferRenderTargetLabel = function ({ option }) {
 
 const onLoad = async () => {
   const option = {
-    group_id: props.groupId
+    groupId: props.groupId
   }
 
   const [err, data] = await fetchApi(fetchGroupGetInviteFriends, option, { loading })
@@ -70,11 +70,11 @@ const onLoad = async () => {
   const list = data?.items || []
 
   items.value = list.map((item: any) => {
-    mapData.set(item.user_id, item.avatar)
+    mapData.set(item.userId, item.avatar)
 
     return {
       label: item.nickname + (item.remark ? ` (${item.remark})` : ''),
-      value: item.user_id,
+      value: item.userId,
       avatar: item.avatar
     }
   })
@@ -84,27 +84,27 @@ const close = () => {
   emit('close')
 }
 
-const onCreateSubmit = async (user_ids: number[]) => {
+const onCreateSubmit = async (userIds: number[]) => {
   if (modelGroupName.value.trim() == '') {
     return message.error('请输入群名称')
   }
 
   const [err, data] = await fetchApi(fetchGroupCreate, {
-    user_ids,
+    userIds,
     name: modelGroupName.value.trim()
   })
 
   if (err) return
 
   message.success('创建成功')
-  emit('onSubmit', data.group_id, modelGroupName.value.trim())
+  emit('onSubmit', data.groupId, modelGroupName.value.trim())
   emit('close')
 }
 
-const onInviteSubmit = async (user_ids: number[]) => {
+const onInviteSubmit = async (userIds: number[]) => {
   const [err] = await fetchApi(fetchGroupInvite, {
-    user_ids,
-    group_id: props.groupId
+    userIds,
+    groupId: props.groupId
   })
 
   if (err) return
