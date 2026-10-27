@@ -20,6 +20,9 @@ class Connect {
       },
       onClose: () => {
         useUserStore().updateSocketStatus(false)
+      },
+      onKicked: () => {
+        useUserStore().logoutLogin()
       }
     })
 

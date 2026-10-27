@@ -2,7 +2,7 @@
 import {
   fetchGroupDetail,
   fetchGroupMemberList,
-  fetchGroupRemarkUpdate,
+  fetchGroupMemberNickname,
   fetchGroupSecede
 } from '@/apis/api'
 import { fetchApi } from '@/apis/request'
@@ -119,10 +119,10 @@ const onSignOut = async () => {
 
 const onChangeRemark = async () => {
   const [err] = await fetchApi(
-    fetchGroupRemarkUpdate,
+    fetchGroupMemberNickname,
     {
       groupId: props.groupId,
-      remark: remark.value
+      nickname: remark.value
     },
     {
       successText: '已更新群名片'
@@ -189,7 +189,7 @@ onMounted(() => {
                   <n-input
                     type="text"
                     placeholder="设置我的群名片"
-                    maxlength="10"
+                    maxlength="64"
                     v-model:value="remark"
                     @keydown.enter="onChangeRemark"
                   />

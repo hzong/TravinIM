@@ -140,6 +140,8 @@ import type {
   GroupOvertListResponse,
   GroupRemarkUpdateRequest,
   GroupRemarkUpdateResponse,
+  GroupMemberNicknameRequest,
+  GroupMemberNicknameResponse,
   GroupRemoveMemberRequest,
   GroupRemoveMemberResponse,
   GroupSecedeRequest,
@@ -738,6 +740,12 @@ export const fetchGroupRemarkUpdate = createApi<
   GroupRemarkUpdateRequest,
   GroupRemarkUpdateResponse
 >('/api/v1/group/remark-update', 'POST')
+
+/** 修改自己的群名片，服务端不推给其他成员。 */
+export const fetchGroupMemberNickname = createApi<
+  GroupMemberNicknameRequest,
+  GroupMemberNicknameResponse
+>('/api/v1/group/member-nickname', 'POST')
 
 /**
  * 移出群成员接口

@@ -739,6 +739,14 @@ export interface GroupRemarkUpdateRequest {
 
 export interface GroupRemarkUpdateResponse {}
 
+/** 自己的群名片。不改官方群名。 */
+export interface GroupMemberNicknameRequest {
+  groupId?: number
+  nickname?: string
+}
+
+export interface GroupMemberNicknameResponse {}
+
 export interface GroupRemoveMemberRequest {
   groupId?: number
   userIds?: number[]
