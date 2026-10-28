@@ -27,7 +27,7 @@ interface Item {
   nickname: string
   gender: number
   remark: string
-  is_mute: number
+  isMute: number
   leader: number
   is_delete: boolean
   motto?: string
@@ -57,7 +57,7 @@ const filterSearch = computed(() => {
 
 const isAdmin = computed(() => {
   return items.value.some((item: any) => {
-    return item.userId == userStore.uid && item.leader == 1
+    return item.userId == userStore.uid && item.role == 1
   })
 })
 
@@ -141,7 +141,7 @@ const onBatchDelete = () => {
 
 const onRowClick = (item: Item) => {
   if (batchDelete.value == true) {
-    if (item.leader > 1) {
+    if (item.role > 1) {
       item.is_delete = !item.is_delete
     }
   } else {
@@ -163,7 +163,7 @@ const onUserInfo = (item: Item) => {
 
 const onAssignAdmin = (item: Item) => {
   let title =
-    item.leader == 3
+    item.role == 3
       ? `确定要给 [${item.nickname}] 分配管理员权限吗？`
       : `确定解除 [${item.nickname}] 管理员权限吗？`
 
@@ -176,7 +176,7 @@ const onAssignAdmin = (item: Item) => {
       await fetchApi(
         fetchGroupAssignAdmin,
         {
-          action: item.leader === 3 ? 1 : 2,
+          action: item.role === 3 ? 1 : 2,
           groupId: props.groupId,
           userId: item.userId
         },
@@ -214,7 +214,7 @@ const onTransfer = (item: Item) => {
 const onForbidden = (item: Item) => {
   let content = `确定要禁言 [${item.nickname}] 此用户吗？`
 
-  if (item.is_mute === 1) {
+  if (item.isMute === 1) {
     content = `确定要解除 [${item.nickname}] 此用户的禁言吗？`
   }
 
@@ -227,7 +227,7 @@ const onForbidden = (item: Item) => {
       await fetchApi(
         fetchGroupNoSpeak,
         {
-          action: item.is_mute === 1 ? 2 : 1,
+          action: item.isMute === 1 ? 2 : 1,
           groupId: props.groupId,
           userId: item.userId
         },
@@ -242,7 +242,7 @@ const onForbidden = (item: Item) => {
 
 // 会话列表右键显示菜单
 const onContextMenu = (e: any, item: Item) => {
-  if (batchDelete.value == true || item.leader === 1) {
+  if (batchDelete.value == true || item.role === 1) {
     return
   }
 
@@ -254,7 +254,7 @@ const onContextMenu = (e: any, item: Item) => {
       key: 'info'
     },
     {
-      label: item.is_mute === 1 ? '解除禁言' : '禁止发言',
+      label: item.isMute === 1 ? '解除禁言' : '禁止发言',
       key: 'forbidden'
     },
     {
@@ -270,9 +270,9 @@ const onContextMenu = (e: any, item: Item) => {
   if (isAdmin.value) {
     dropdown.options.push({ label: '转让群主', key: 'transfer' })
 
-    if (item.leader == 2) {
+    if (item.role == 2) {
       dropdown.options.push({ label: '管理权限(解除)', key: 'assignment' })
-    } else if (item.leader == 3) {
+    } else if (item.role == 3) {
       dropdown.options.push({ label: '管理权限(分配)', key: 'assignment' })
     }
   }
@@ -341,7 +341,7 @@ onMounted(() => {
     <main v-else class="el-main main me-scrollbar me-scrollbar-thumb">
       <div class="member-item" v-for="item in filterSearch" :key="item.userId">
         <div class="tool flex-center" v-show="batchDelete">
-          <n-checkbox :disabled="item.leader === 2" size="small" :checked="item.is_delete" />
+          <n-checkbox :disabled="item.role === 2" size="small" :checked="item.is_delete" />
         </div>
         <div class="avatar pointer" @click="onUserInfo(item)">
           <im-avatar :size="40" :src="item.avatar" :username="item.nickname" />
@@ -357,9 +357,9 @@ onMounted(() => {
               <span v-show="item.remark"> ({{ item.remark }})</span>
             </p>
             <p>
-              <span class="badge master" v-show="item.leader === 1">群主</span>
-              <span class="badge leader" v-show="item.leader === 2">管理员</span>
-              <span class="badge muted" v-show="item.is_mute === 1">已禁言</span>
+              <span class="badge master" v-show="item.role === 1">群主</span>
+              <span class="badge leader" v-show="item.role === 2">管理员</span>
+              <span class="badge muted" v-show="item.isMute === 1">已禁言</span>
               <!-- <span class="badge qiye">企业</span> -->
             </p>
           </div>

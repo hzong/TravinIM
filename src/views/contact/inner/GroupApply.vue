@@ -13,8 +13,8 @@ interface Item {
   avatar: string
   nickname: string
   remark: string
-  created_at: string
-  group_name: string
+  createdAt: string
+  groupName: string
 }
 
 const { toShowUserInfo, message } = useInject()
@@ -40,7 +40,7 @@ const onAgree = async (item: Item) => {
   await fetchApi(
     fetchGroupApplyAgree,
     {
-      apply_id: item.id
+      applyId: item.id
     },
     {
       successText: '已同意',
@@ -55,7 +55,7 @@ const onDelete = (item: Item) => {
   fetchApi(
     fetchGroupApplyDecline,
     {
-      apply_id: item.id,
+      applyId: item.id,
       remark: '已拒绝'
     },
     {
@@ -92,11 +92,11 @@ onMounted(() => {
           <span>
             {{ item.nickname }}
           </span>
-          <span class="time">{{ formatTime(item.created_at, 'MM/DD HH:mm') }}</span>
+          <span class="time">{{ formatTime(item.createdAt, 'MM/DD HH:mm') }}</span>
         </div>
         <div class="text text-ellipsis">
           <span>申请加入:</span>
-          <n-button text type="primary">&nbsp;{{ item.group_name }} </n-button>
+          <n-button text type="primary">&nbsp;{{ item.groupName }} </n-button>
         </div>
         <div class="remark text-ellipsis">留言: {{ item.remark }}</div>
       </div>

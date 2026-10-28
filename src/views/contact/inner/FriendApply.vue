@@ -38,7 +38,7 @@ const onAccept = async (item: ContactApplyListResponse_Item) => {
   const [err] = await fetchApi(
     fetchContactApplyAccept,
     {
-      apply_id: item.id,
+      applyId: item.id,
       remark: '拒绝'
     },
     { successText: '已同意' }
@@ -55,7 +55,7 @@ const onDecline = async (item: ContactApplyListResponse_Item) => {
   const [err] = await fetchApi(
     fetchContactApplyDecline,
     {
-      apply_id: item.id,
+      applyId: item.id,
       remark: '拒绝'
     },
     { successText: '已拒绝' }
@@ -92,7 +92,7 @@ onMounted(() => {
       <div class="content pointer o-hidden" @click="onInfo(item)">
         <div class="username">
           <span>{{ item.nickname }}</span>
-          <span class="time">{{ formatTime(item.created_at, 'MM/DD HH:mm') }}</span>
+          <span class="time">{{ formatTime(item.createdAt, 'MM/DD HH:mm') }}</span>
         </div>
         <div class="remark text-ellipsis">留言: {{ item.remark }}</div>
       </div>

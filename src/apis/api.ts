@@ -84,6 +84,7 @@ import type {
   ContactOnlineStatusResponse,
   ContactSearchRequest,
   ContactSearchResponse,
+  ContactSearchUserResponse,
   EmoticonCreateRequest,
   EmoticonCreateResponse,
   EmoticonDeleteRequest,
@@ -514,6 +515,12 @@ export const fetchContactOnlineStatus = createApi<
  */
 export const fetchContactSearch = createApi<ContactSearchRequest, ContactSearchResponse>(
   '/api/v1/contact/search',
+  'POST'
+)
+
+/** 按邮箱精确查找一个人，响应直接带 userId，没有 items。 */
+export const fetchContactSearchUser = createApi<ContactSearchRequest, ContactSearchUserResponse>(
+  '/api/v1/contact/search-user',
   'POST'
 )
 

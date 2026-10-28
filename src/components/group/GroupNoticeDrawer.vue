@@ -33,12 +33,12 @@ async function loadDetail() {
   if (err) return
 
   detail.value = {
-    updatedAt: data?.notice?.updatedAt || '',
-    content: data.notice?.content || '',
-    modify_user_name: data.notice?.modify_user_name || ''
+    updatedAt: '',
+    content: data.notice || '',
+    modify_user_name: ''
   }
 
-  editorContent.value = data.notice?.content || ''
+  editorContent.value = data.notice || ''
 }
 
 watch(isShow, () => {

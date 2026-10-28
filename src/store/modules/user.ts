@@ -68,17 +68,15 @@ export const useUserStore = defineStore('user', {
       if (err) return
 
       this.nickname = data.userInfo.nickname
-      this.uid = data.userInfo.id ?? data.userInfo.uid
+      this.uid = data.userInfo.id
       const userNo = data.userInfo.userNo
       if (userNo && this.uid) {
         rememberUserNo(userNo, this.uid)
       }
       this.avatar = data.userInfo.avatar
       this.gender = data.userInfo.gender
-      this.mobile = data.userInfo.mobile || ''
       this.email = data.userInfo.email || ''
       this.motto = data.userInfo.motto
-      this.isQiye = data.userInfo.is_qiye
 
       storage.set('userInfo', data)
     },

@@ -23,8 +23,8 @@ const onLoadData = async () => {
 
   if (err) return
 
-  detail.is_mute = data.is_mute === 1
-  detail.is_overt = data.is_overt === 1
+  detail.is_mute = data.isMute === 1
+  detail.is_overt = data.isOvert === 1
 }
 
 const onDismiss = async () => {

@@ -54,7 +54,7 @@ const onAgree = async (item: GroupApplyListResponse_Item) => {
   await fetchApi(
     fetchGroupApplyAgree,
     {
-      apply_id: item.id
+      applyId: item.id
     },
     {
       successText: '已同意',
@@ -86,7 +86,7 @@ const onDelete = (item: GroupApplyListResponse_Item) => {
       await fetchApi(
         fetchGroupApplyDecline,
         {
-          apply_id: item.id,
+          applyId: item.id,
           remark: remark
         },
         {
@@ -145,7 +145,7 @@ onMounted(() => {
           <div class="item-title">
             <p class="nickname text-ellipsis">
               <span>{{ item.nickname }}</span>
-              <span class="date mt-l15">{{ item.created_at }}</span>
+              <span class="date mt-l15">{{ item.createdAt }}</span>
             </p>
           </div>
           <div class="item-text text-ellipsis">备注: {{ item.remark }}</div>

@@ -61,7 +61,7 @@ const onUploadAvatar = (avatar: string) => {
 sync(async () => {
   const data = await fetchUserDetail({})
   detail.nickname = data.nickname
-  detail.mobile = data.mobile
+  detail.mobile = ''
   detail.email = data.email
   detail.gender = data.gender
   detail.motto = data.motto
@@ -98,7 +98,7 @@ sync(async () => {
         style="max-width: 500px; margin-top: 25px"
       >
         <n-form-item label="登录账号：">
-          {{ hidePhone(detail.mobile) }}
+          {{ detail.email || '-' }}
           <n-button class="mt-l15" type="primary" text @click="router.push('/settings/security')">
             修改
           </n-button>

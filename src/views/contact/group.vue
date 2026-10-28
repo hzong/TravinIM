@@ -26,20 +26,20 @@ const tabIndex = ref('all')
 const uid = userStore.uid
 
 const filterCreator = computed(() => {
-  return items.value.filter((item: any) => item.creator_id == uid)
+  return items.value.filter((item: any) => item.ownerId == uid)
 })
 
 const filter = computed((): any[] => {
   return items.value.filter((item: any) => {
-    if (tabIndex.value == 'create' && item.creator_id != uid) {
+    if (tabIndex.value == 'create' && item.ownerId != uid) {
       return false
     }
 
-    if (tabIndex.value == 'join' && item.creator_id == uid) {
+    if (tabIndex.value == 'join' && item.ownerId == uid) {
       return false
     }
 
-    return item.group_name.toLowerCase().indexOf(keywords.value.toLowerCase()) != -1
+    return (item.groupName || '').toLowerCase().indexOf(keywords.value.toLowerCase()) != -1
   })
 })
 
@@ -113,7 +113,7 @@ onMounted(() => {
           v-for="item in filter"
           :key="item.groupId"
           :avatar="item.avatar"
-          :username="item.group_name"
+          :username="item.groupName"
           :gender="item.gender"
           :motto="item.profile"
           flag="查看"

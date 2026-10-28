@@ -139,7 +139,7 @@ async function loopGetOnlineStatus() {
   })
 
   if (!err) {
-    talkParams.online = data.online_status == 'Y'
+    talkParams.online = data.onlineStatus == 'Y'
   }
 }
 

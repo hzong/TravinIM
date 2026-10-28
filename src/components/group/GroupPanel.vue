@@ -47,13 +47,13 @@ const members = ref<any[]>([])
 
 const isLeader = computed(() => {
   return members.value.some((item: any) => {
-    return item.userId == userStore.uid && item.leader == 2
+    return item.userId == userStore.uid && item.role == 1
   })
 })
 
 const isAdmin = computed(() => {
   return members.value.some((item: any) => {
-    return item.userId == userStore.uid && item.leader == 1
+    return item.userId == userStore.uid && item.role == 2
   })
 })
 
@@ -79,12 +79,10 @@ async function loadDetail() {
 
   if (err) return
 
-  remark.value = data.visit_card
   detail.avatar = data.avatar
-  detail.name = data.group_name
+  detail.name = data.groupName
   detail.profile = data.profile
-  detail.visit_card = data.visit_card
-  detail.notice = data.notice?.content || ''
+  detail.notice = data.notice || ''
 }
 
 /**
@@ -100,6 +98,10 @@ async function loadMembers() {
   if (err) return
 
   members.value = data.items || []
+  const mine = members.value.find((item: any) => item.userId == userStore.uid)
+  const card = mine?.nickname || ''
+  remark.value = card
+  detail.visit_card = card
 }
 
 const onClose = () => {

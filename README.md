@@ -41,7 +41,6 @@ pnpm build
 
 ```env
 VITE_BASE_API=http://127.0.0.1:9503
-VITE_SOCKET_API=ws://127.0.0.1:9504
 ```
 
 ###### 关于 Nginx 的一些配置

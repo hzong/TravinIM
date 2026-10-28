@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { fetchContactSearch } from '@/apis/api'
+import { fetchContactSearchUser } from '@/apis/api'
 import { fetchApi } from '@/apis/request'
 import { useInject } from '@/hooks'
 
@@ -23,18 +23,19 @@ const onSubmit = async () => {
   if (!keyword.value.length) return
 
   const [err, data] = await fetchApi(
-    fetchContactSearch,
-    { mobile: keyword.value },
+    fetchContactSearchUser,
+    { email: keyword.value },
     {
       error: false
     }
   )
 
-  if (err) {
+  const userId = data?.userId
+  if (err || !userId) {
     return onShowError(true)
   }
 
-  toShowUserInfo(data.userId)
+  toShowUserInfo(userId)
   onClose()
 }
 
@@ -66,7 +67,7 @@ const onClose = () => {
         :feedback="isShowError ? '无法找到该用户，请检查搜索内容并重试!' : ''"
       >
         <n-input
-          placeholder="请输入手机号"
+          placeholder="请输入邮箱"
           :maxlength="30"
           v-model:value="keyword"
           @keydown.enter="onSubmit"
@@ -77,7 +78,7 @@ const onClose = () => {
     <template #footer>
       <div style="width: 100%; text-align: center">
         <n-button type="primary" text-color="#ffffff" @click="onSubmit" :disabled="isCanSubmit">
-          查询手机号
+          查询邮箱
         </n-button>
       </div>
     </template>

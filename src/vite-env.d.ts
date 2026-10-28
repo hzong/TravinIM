@@ -12,7 +12,6 @@ interface ImportMetaEnv {
   readonly ENV: string
   readonly VITE_RSA_PUBLIC_KEY: string
   readonly VITE_BASE_API: string
-  readonly VITE_SOCKET_API: string
 }
 
 declare interface Window {

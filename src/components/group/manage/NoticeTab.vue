@@ -45,7 +45,7 @@ const loadDetail = async () => {
 
   if (err) return
 
-  editorContent.value = data.notice?.content || ''
+  editorContent.value = data.notice || ''
 }
 
 onMounted(() => {

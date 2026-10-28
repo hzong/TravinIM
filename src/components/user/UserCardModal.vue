@@ -74,7 +74,7 @@ const onLoadUser = async () => {
     userId: data.userId,
     avatar: data.avatar,
     gender: data.gender,
-    mobile: data.mobile,
+    mobile: '',
     motto: data.motto,
     nickname: data.nickname,
     email: data.email,

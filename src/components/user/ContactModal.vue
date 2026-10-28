@@ -69,8 +69,8 @@ const onLoadGroup = async () => {
       id: item.groupId,
       avatar: item.avatar,
       type: 2,
-      name: item.group_name,
-      keyword: item.group_name,
+      name: item.groupName,
+      keyword: item.groupName,
       remark: '',
       checked: false
     }

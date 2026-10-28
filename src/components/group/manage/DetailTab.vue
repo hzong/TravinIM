@@ -31,7 +31,7 @@ const onLoadData = async () => {
   const [err, data] = await fetchApi(fetchGroupDetail, { groupId: props.groupId })
   if (err) return
 
-  modelDetail.name = data.group_name
+  modelDetail.name = data.groupName
   modelDetail.avatar = data.avatar
   modelDetail.profile = data.profile
 }
@@ -45,7 +45,7 @@ async function onSubmitBaseInfo() {
     fetchGroupSetting,
     {
       groupId: props.groupId,
-      group_name: modelDetail.name,
+      groupName: modelDetail.name,
       avatar: modelDetail.avatar,
       profile: modelDetail.profile
     },

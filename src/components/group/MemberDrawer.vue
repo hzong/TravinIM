@@ -50,8 +50,8 @@ const filters = computed(() => {
             </div>
             <div class="nickname text-ellipsis">
               <span>{{ item.nickname ? item.nickname : '-' }}</span>
-              <span class="badge master" v-show="item.leader === 1">群主</span>
-              <span class="badge leader" v-show="item.leader === 2">管理员</span>
+              <span class="badge master" v-show="item.role === 1">群主</span>
+              <span class="badge leader" v-show="item.role === 2">管理员</span>
             </div>
             <div class="card text-ellipsis grey">
               {{ item.remark || '-' }}

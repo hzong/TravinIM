@@ -453,11 +453,20 @@ export interface ContactOnlineStatusRequest {
 
 export interface ContactOnlineStatusResponse {
   /** 在线状态 [N:离线;Y:在线;] */
-  online_status: string
+  onlineStatus: string
+}
+
+/** 精确查找一个人，没有 items。找不到时 userId 为空。 */
+export interface ContactSearchUserResponse {
+  userId?: number
+  nickname?: string
+  avatar?: string
+  gender?: number
+  motto?: string
 }
 
 export interface ContactSearchRequest {
-  mobile: string
+  email: string
 }
 
 export interface ContactSearchResponse {
